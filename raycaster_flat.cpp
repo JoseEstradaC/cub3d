@@ -69,7 +69,7 @@ int worldMap[mapWidth][mapHeight]=
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
 
-int main(int /*argc*/, char */*argv*/[])
+int main(int argc, char *argv[])
 {
   double posX = 22, posY = 12;  //x and y start position
   double dirX = -1, dirY = 0; //initial direction vector

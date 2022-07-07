@@ -21,6 +21,17 @@ g++ *.cpp -lSDL
 #define mapWidth 24
 #define mapHeight 24
 
+typedef struct s_vars
+{
+	mlx_t	*mlx;
+	double	*posX;
+	double	*posY;
+	double	*dirX;
+	double	*dirY;
+	double	*planeX;
+	double	*planeY;
+}	t_vars;
+
 int worldMap[mapWidth][mapHeight]=
 {
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -48,6 +59,48 @@ int worldMap[mapWidth][mapHeight]=
   {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
+
+void hook(void *param)
+{
+	t_vars	*vars;
+	double moveSpeed = 0.04;
+	double rotSpeed = 0.025;
+
+	vars = param;
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
+		mlx_close_window(vars->mlx);
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_UP))
+	{
+		printf("key: %d\n", MLX_KEY_UP);
+      if(worldMap[(int)(*vars->posX + *vars->dirX * moveSpeed)][(int)*vars->posY] == false) *vars->posX += *vars->dirX * moveSpeed;
+      if(worldMap[(int)*vars->posX][(int)(*vars->posY + *vars->dirY * moveSpeed)] == false) *vars->posY += *vars->dirY * moveSpeed;
+	}
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_DOWN))
+    {
+      if(worldMap[(int)(*vars->posX - *vars->dirX * moveSpeed)][(int)*vars->posY] == false) *vars->posX -= *vars->dirX * moveSpeed;
+      if(worldMap[(int)*vars->posX][(int)(*vars->posY - *vars->dirY * moveSpeed)] == false) *vars->posY -= *vars->dirY * moveSpeed;
+    }
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT))
+    {
+      //both camera direction and camera plane must be rotated
+      double oldDirX = *vars->dirX;
+      *vars->dirX = *vars->dirX * cos(-rotSpeed) - *vars->dirY * sin(-rotSpeed);
+      *vars->dirY = oldDirX * sin(-rotSpeed) + *vars->dirY * cos(-rotSpeed);
+      double oldPlaneX = *vars->planeX;
+      *vars->planeX = *vars->planeX * cos(-rotSpeed) - *vars->planeY * sin(-rotSpeed);
+      *vars->planeY = oldPlaneX * sin(-rotSpeed) + *vars->planeY * cos(-rotSpeed);
+    }
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
+    {
+      //both camera direction and camera plane must be rotated
+      double oldDirX = *vars->dirX;
+      *vars->dirX = *vars->dirX * cos(rotSpeed) - *vars->dirY * sin(rotSpeed);
+      *vars->dirY = oldDirX * sin(rotSpeed) + *vars->dirY * cos(rotSpeed);
+      double oldPlaneX = *vars->planeX;
+      *vars->planeX = *vars->planeX * cos(rotSpeed) - *vars->planeY * sin(rotSpeed);
+      *vars->planeY = oldPlaneX * sin(rotSpeed) + *vars->planeY * cos(rotSpeed);
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -94,8 +147,8 @@ int main(int argc, char *argv[])
       //stepping further below works. So the values can be computed as below.
       // Division through zero is prevented, even though technically that's not
       // needed in C++ with IEEE 754 floating point values.
-      double deltaDistX = (rayDirX == 0) ? 1e30 : abs(1 / rayDirX);
-      double deltaDistY = (rayDirY == 0) ? 1e30 : abs(1 / rayDirY);
+      double deltaDistX = (rayDirX == 0) ? 1e30 : fabs(1 / rayDirX);
+      double deltaDistY = (rayDirY == 0) ? 1e30 : fabs(1 / rayDirY);
 
       double perpWallDist;
 
@@ -187,7 +240,8 @@ int main(int argc, char *argv[])
 //TODO
 	for (int y = drawStart; y < drawEnd; y++)
 	{
-		*(img->pixels + y * img->width + x) = color;
+		mlx_put_pixel(img, x, y, color);
+		/**(img->pixels + y * img->width + x) = color;*/
 	}
       /*verLine(x, drawStart, drawEnd, color);*/
     }
@@ -245,6 +299,8 @@ int main(int argc, char *argv[])
   //}
   */
 	mlx_image_to_window(mlx, img, 0, 0);
+	t_vars vars = {mlx, &posX, &posY, &dirX, &dirY, &planeX, &planeY};
+	mlx_loop_hook(mlx, &hook, &vars);
 	mlx_loop(mlx);
 	mlx_terminate(mlx);
 }
