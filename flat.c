@@ -158,15 +158,15 @@ void	render(void *param)
       int color;
       switch(worldMap[mapX][mapY])
       {
-        case 1:  color = 0x00FF0000;    break; //red
-        case 2:  color = 0x0000FF00;  break; //green
-        case 3:  color = 0x000000FF;   break; //blue
-        case 4:  color = 0x00FFFFFF;  break; //white
-        default: color = 0x0000FFFF; break; //yellow
+        case 1:  color = 0xFF0000FF;    break; //red
+        case 2:  color = 0x00FF00FF;  break; //green
+        case 3:  color = 0x0000FFFF;   break; //blue
+        case 4:  color = 0xFFFFFFFF;  break; //white
+        default: color = 0xFFFF00FF; break; //yellow
       }
 
       //give x and y sides different brightness
-      if(side == 1) {color = color / 2;}
+      if(side == 1) {color = color - 88;}
 
       //draw the pixels of the stripe as a vertical line
 	  for (int y = drawStart; y < drawEnd; y++)
