@@ -5,6 +5,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "MLX42/MLX42.h"
 /*#include "quickcg.h"*/
@@ -24,6 +25,7 @@ g++ *.cpp -lSDL
 typedef struct s_vars
 {
 	mlx_t	*mlx;
+	mlx_image_t	*img;
 	double	*posX;
 	double	*posY;
 	double	*dirX;
@@ -60,68 +62,21 @@ int worldMap[mapWidth][mapHeight]=
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
 
-void hook(void *param)
+void	render(void *param)
 {
-	t_vars	*vars;
-	double moveSpeed = 0.04;
-	double rotSpeed = 0.025;
+	t_vars *vars = param;
+	double posX = *vars->posX;
+	double posY = *vars->posY;
+	double dirX = *vars->dirX;
+	double dirY = *vars->dirY;
+	double planeX = *vars->planeX;
+	double planeY = *vars->planeY;
 
-	vars = param;
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
-		mlx_close_window(vars->mlx);
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_UP))
-	{
-		printf("key: %d\n", MLX_KEY_UP);
-      if(worldMap[(int)(*vars->posX + *vars->dirX * moveSpeed)][(int)*vars->posY] == false) *vars->posX += *vars->dirX * moveSpeed;
-      if(worldMap[(int)*vars->posX][(int)(*vars->posY + *vars->dirY * moveSpeed)] == false) *vars->posY += *vars->dirY * moveSpeed;
-	}
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_DOWN))
-    {
-      if(worldMap[(int)(*vars->posX - *vars->dirX * moveSpeed)][(int)*vars->posY] == false) *vars->posX -= *vars->dirX * moveSpeed;
-      if(worldMap[(int)*vars->posX][(int)(*vars->posY - *vars->dirY * moveSpeed)] == false) *vars->posY -= *vars->dirY * moveSpeed;
-    }
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT))
-    {
-      //both camera direction and camera plane must be rotated
-      double oldDirX = *vars->dirX;
-      *vars->dirX = *vars->dirX * cos(-rotSpeed) - *vars->dirY * sin(-rotSpeed);
-      *vars->dirY = oldDirX * sin(-rotSpeed) + *vars->dirY * cos(-rotSpeed);
-      double oldPlaneX = *vars->planeX;
-      *vars->planeX = *vars->planeX * cos(-rotSpeed) - *vars->planeY * sin(-rotSpeed);
-      *vars->planeY = oldPlaneX * sin(-rotSpeed) + *vars->planeY * cos(-rotSpeed);
-    }
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
-    {
-      //both camera direction and camera plane must be rotated
-      double oldDirX = *vars->dirX;
-      *vars->dirX = *vars->dirX * cos(rotSpeed) - *vars->dirY * sin(rotSpeed);
-      *vars->dirY = oldDirX * sin(rotSpeed) + *vars->dirY * cos(rotSpeed);
-      double oldPlaneX = *vars->planeX;
-      *vars->planeX = *vars->planeX * cos(rotSpeed) - *vars->planeY * sin(rotSpeed);
-      *vars->planeY = oldPlaneX * sin(rotSpeed) + *vars->planeY * cos(rotSpeed);
-    }
-}
+    /*memset(vars->img->pixels, 0, vars->img->width * vars->img->height * sizeof(uint8_t));*/
+	for (int x = 0; x < screenWidth; x++)
+		for (int y = 0; y < screenHeight; y++)
+			mlx_put_pixel(vars->img, x, y, 0);
 
-int main(int argc, char *argv[])
-{
-  double posX = 22, posY = 12;  //x and y start position
-  double dirX = -1, dirY = 0; //initial direction vector
-  double planeX = 0, planeY = 0.66; //the 2d raycaster version of camera plane
-
-  double time = 0; //time of current frame
-  double oldTime = 0; //time of previous frame
-
-  mlx_t			*mlx;
-  mlx_image_t	*img;
-
-  mlx = mlx_init(screenWidth, screenHeight, "Raycaster", false);
-  if (!mlx)
-	  exit(EXIT_FAILURE);
-  img = mlx_new_image(mlx, screenWidth, screenHeight);
-
-  /*screen(screenWidth, screenHeight, 0, "Raycaster");*/
-  //while(!done())
-  //{
     for(int x = 0; x < screenWidth; x++)
     {
       //calculate ray position and direction
@@ -136,17 +91,6 @@ int main(int argc, char *argv[])
       double sideDistX;
       double sideDistY;
 
-      //length of ray from one x or y-side to next x or y-side
-      //these are derived as:
-      //deltaDistX = sqrt(1 + (rayDirY * rayDirY) / (rayDirX * rayDirX))
-      //deltaDistY = sqrt(1 + (rayDirX * rayDirX) / (rayDirY * rayDirY))
-      //which can be simplified to abs(|rayDir| / rayDirX) and abs(|rayDir| / rayDirY)
-      //where |rayDir| is the length of the vector (rayDirX, rayDirY). Its length,
-      //unlike (dirX, dirY) is not 1, however this does not matter, only the
-      //ratio between deltaDistX and deltaDistY matters, due to the way the DDA
-      //stepping further below works. So the values can be computed as below.
-      // Division through zero is prevented, even though technically that's not
-      // needed in C++ with IEEE 754 floating point values.
       double deltaDistX = (rayDirX == 0) ? 1e30 : fabs(1 / rayDirX);
       double deltaDistY = (rayDirY == 0) ? 1e30 : fabs(1 / rayDirY);
 
@@ -198,12 +142,7 @@ int main(int argc, char *argv[])
         //Check if ray has hit a wall
         if(worldMap[mapX][mapY] > 0) hit = 1;
       }
-      //Calculate distance projected on camera direction. This is the shortest distance from the point where the wall is
-      //hit to the camera plane. Euclidean to center camera point would give fisheye effect!
-      //This can be computed as (mapX - posX + (1 - stepX) / 2) / rayDirX for side == 0, or same formula with Y
-      //for size == 1, but can be simplified to the code below thanks to how sideDist and deltaDist are computed:
-      //because they were left scaled to |rayDir|. sideDist is the entire length of the ray above after the multiple
-      //steps, but we subtract deltaDist once because one step more into the wall was taken above.
+
       if(side == 0) perpWallDist = (sideDistX - deltaDistX);
       else          perpWallDist = (sideDistY - deltaDistY);
 
@@ -216,16 +155,9 @@ int main(int argc, char *argv[])
       int drawEnd = lineHeight / 2 + screenHeight / 2;
       if(drawEnd >= screenHeight) drawEnd = screenHeight - 1;
 
-      //choose wall color
-      /*ColorRGB color;*/
       int color;
       switch(worldMap[mapX][mapY])
       {
-        /*case 1:  color = RGB_Red;    break; //red*/
-        /*case 2:  color = RGB_Green;  break; //green*/
-        /*case 3:  color = RGB_Blue;   break; //blue*/
-        /*case 4:  color = RGB_White;  break; //white*/
-        /*default: color = RGB_Yellow; break; //yellow*/
         case 1:  color = 0x00FF0000;    break; //red
         case 2:  color = 0x0000FF00;  break; //green
         case 3:  color = 0x000000FF;   break; //blue
@@ -237,14 +169,73 @@ int main(int argc, char *argv[])
       if(side == 1) {color = color / 2;}
 
       //draw the pixels of the stripe as a vertical line
-//TODO
-	for (int y = drawStart; y < drawEnd; y++)
-	{
-		mlx_put_pixel(img, x, y, color);
-		/**(img->pixels + y * img->width + x) = color;*/
-	}
-      /*verLine(x, drawStart, drawEnd, color);*/
+	  for (int y = drawStart; y < drawEnd; y++)
+		mlx_put_pixel(vars->img, x, y, color);
     }
+}
+
+void hook(void *param)
+{
+	t_vars	*vars;
+	double moveSpeed = 0.04;
+	double rotSpeed = 0.025;
+
+	vars = param;
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
+		mlx_close_window(vars->mlx);
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_UP))
+	{
+      if(worldMap[(int)(*vars->posX + *vars->dirX * moveSpeed)][(int)*vars->posY] == false) *vars->posX += *vars->dirX * moveSpeed;
+      if(worldMap[(int)*vars->posX][(int)(*vars->posY + *vars->dirY * moveSpeed)] == false) *vars->posY += *vars->dirY * moveSpeed;
+	}
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_DOWN))
+    {
+      if(worldMap[(int)(*vars->posX - *vars->dirX * moveSpeed)][(int)*vars->posY] == false) *vars->posX -= *vars->dirX * moveSpeed;
+      if(worldMap[(int)*vars->posX][(int)(*vars->posY - *vars->dirY * moveSpeed)] == false) *vars->posY -= *vars->dirY * moveSpeed;
+    }
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT))
+    {
+      //both camera direction and camera plane must be rotated
+      double oldDirX = *vars->dirX;
+      *vars->dirX = *vars->dirX * cos(-rotSpeed) - *vars->dirY * sin(-rotSpeed);
+      *vars->dirY = oldDirX * sin(-rotSpeed) + *vars->dirY * cos(-rotSpeed);
+      double oldPlaneX = *vars->planeX;
+      *vars->planeX = *vars->planeX * cos(-rotSpeed) - *vars->planeY * sin(-rotSpeed);
+      *vars->planeY = oldPlaneX * sin(-rotSpeed) + *vars->planeY * cos(-rotSpeed);
+    }
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
+    {
+      //both camera direction and camera plane must be rotated
+      double oldDirX = *vars->dirX;
+      *vars->dirX = *vars->dirX * cos(rotSpeed) - *vars->dirY * sin(rotSpeed);
+      *vars->dirY = oldDirX * sin(rotSpeed) + *vars->dirY * cos(rotSpeed);
+      double oldPlaneX = *vars->planeX;
+      *vars->planeX = *vars->planeX * cos(rotSpeed) - *vars->planeY * sin(rotSpeed);
+      *vars->planeY = oldPlaneX * sin(rotSpeed) + *vars->planeY * cos(rotSpeed);
+    }
+	render(param);
+}
+
+int main(int argc, char *argv[])
+{
+  double posX = 22, posY = 12;  //x and y start position
+  double dirX = -1, dirY = 0; //initial direction vector
+  double planeX = 0, planeY = 0.66; //the 2d raycaster version of camera plane
+
+  double time = 0; //time of current frame
+  double oldTime = 0; //time of previous frame
+
+  mlx_t			*mlx;
+  mlx_image_t	*img;
+
+  mlx = mlx_init(screenWidth, screenHeight, "Raycaster", false);
+  if (!mlx)
+	  exit(EXIT_FAILURE);
+  img = mlx_new_image(mlx, screenWidth, screenHeight);
+
+  /*screen(screenWidth, screenHeight, 0, "Raycaster");*/
+  //while(!done())
+  //{
 	/*
     //timing for input and FPS counter
     oldTime = time;
@@ -298,8 +289,10 @@ int main(int argc, char *argv[])
     }
   //}
   */
+
+	t_vars vars = {mlx, img, &posX, &posY, &dirX, &dirY, &planeX, &planeY};
+  	render(&vars);
 	mlx_image_to_window(mlx, img, 0, 0);
-	t_vars vars = {mlx, &posX, &posY, &dirX, &dirY, &planeX, &planeY};
 	mlx_loop_hook(mlx, &hook, &vars);
 	mlx_loop(mlx);
 	mlx_terminate(mlx);
