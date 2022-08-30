@@ -3,7 +3,7 @@
   <img src="https://user-images.githubusercontent.com/63303990/150698103-7e908ff3-abf8-4b0f-ad54-07a76b6c45e2.png" alt="42MLX_Logo">
 </div>
 <div align="center">
-  <sub>Written by <a href="https://w2wizard.github.io/">W2.Wizard</a> for the 42 Network</sub>
+  <sub>Written by <a href="https://portfolio.w2wizard.dev/">W2.Wizard</a> for the 42 Network</sub>
     <div align="center">
 	</br>
 	<img src="https://img.shields.io/github/license/codam-coding-college/MLX42" alt="License GPL2.0"> 
@@ -50,10 +50,14 @@ In the very end a library is generated, compile your program with this library!
 ### Via [Homebrew](https://brew.sh/) / [Homebrew42](https://github.com/kube/42homebrew) by building from source.
 
 2. Install GLFW
+
+Through brew:
 ```bash
 ➜  ~ brew update
 ➜  ~ brew install glfw
 ```
+
+Or, if studying at Codam, you can find GLFW in the [Managed Software Center](munki://detail-GLFW).
 
 3. Compile MLX42
 ```bash 
@@ -62,6 +66,7 @@ In the very end a library is generated, compile your program with this library!
 ```
 
 4. Compile Program
+
 With the normal brew version you can now simply compile the program with:
 ```bash
 ➜  ~ gcc main.c libmlx42.a -lglfw ...
@@ -77,15 +82,22 @@ However, with 42Homebrew you have additionally specify the location of the libra
 ➜  ~ gcc main.c libmlx42.a -I include -lglfw -L "/Users/$USER/.brew/opt/glfw/lib/"
 ```
 
+Or, if studying at Codam, compile using the following flags:
+```bash
+➜  ~ gcc main.c libmlx42.a -I include -lglfw3 -framework Cocoa -framework OpenGL -framework IOKit
+```
+
+5. Run!
+
 ### Pre-compiled libraries
 
-1. Download the binaries directly [here.](https://www.glfw.org/download.html)
+2. Download the binaries directly [here.](https://www.glfw.org/download.html)
 
-2. If possible move the contents of `lib` and `include` of GLFW to `/usr/local/lib` and `/usr/local/include` respectively.
+3. If possible move the contents of `lib` and `include` of GLFW to `/usr/local/lib` and `/usr/local/include` respectively.
    If not possible, move the lib file to the root of MLX42 and move the GLFW directory in include to the include of MLX42.
    NOTE: For the lib choose the appropriate `.a` & `.dylib` file depending on your architecture.
 
-3. Compile MLX42
+4. Compile MLX42
 ```bash 
 ➜  ~ cd MLX42
 ➜  ~ make
@@ -100,7 +112,7 @@ Else, simply compile like this:
 ➜  ~ gcc main.c libmlx42.a -lglfw ...
 ```
 
-4. Run
+5. Run
 
 In case of any security warnings or MacOS telling you it can't verify the author/developer, go to ```Settings > Security & Privacy```.
 There will be a pop-up at the bottom telling you that an application tried to run, click the option to let it run.
@@ -110,12 +122,22 @@ There will be a pop-up at the bottom telling you that an application tried to ru
 NOTE: This will not run with Windows Subsystem for Linux (WSL)!!!
 
 1. Install the necessary packages:
+
+For Debian like (Ubuntu, Mint, Pop OS...):
 ```bash 
 ➜  ~ sudo apt update
 ➜  ~ sudo apt install build-essential libx11-dev libglfw3-dev libglfw3 xorg-dev
 ```
 
-NOTE: For arch-linux you might also have to do ```sudo apt install glfw-x11``` if available.
+For Arch-linux (Manjaro, Endeavor, Garuda):
+```bash
+➜  ~ sudo pacman -S glfw-x11
+```
+OR (if you use sway/wlroots compositor or other wayland compositor)
+
+```bash
+➜  ~ sudo pacman -S glfw-wayland
+```
 
 2. Download MLX42 & Build
 ```bash 
@@ -124,7 +146,7 @@ NOTE: For arch-linux you might also have to do ```sudo apt install glfw-x11``` i
 ➜  ~ make
 ```
 
-3. Create a ```main.c``` file, include ```MLX42/MLX42.h```, compile with ```-ldl -lglfw ```, make sure to also do ```-I <include_path>```.
+3. Create a ```main.c``` file, include ```MLX42/MLX42.h```, compile with ```-ldl -lglfw (or -lglfw3) -pthread -lm```, make sure to also do ```-I <include_path>```.
  
 4. Run.
 
