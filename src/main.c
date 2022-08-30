@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/08/30 18:21:12 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/08/30 20:02:42 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,6 @@ g++ *.cpp -lSDL
 
 //place the example code below here:
 
-#define screenWidth 640
-#define screenHeight 480
-#define mapWidth 24
-#define mapHeight 24
-
-typedef struct s_vars
-{
-	mlx_t		*mlx;
-	mlx_image_t	*img;
-	double		*posX;
-	double		*posY;
-	double		*dirX;
-	double		*dirY;
-	double		*planeX;
-	double		*planeY;
-}				t_vars;
-
 int worldMap[mapWidth][mapHeight] =
 	{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -46,7 +29,7 @@ int worldMap[mapWidth][mapHeight] =
 			1},
 		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			1},
-		{1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 3, 0, 3, 0, 3, 0, 0, 0,
+		{1, 0, 0, 0, 0, 0, 2, 2, 1, 2, 2, 0, 0, 0, 0, 3, 0, 3, 0, 3, 0, 0, 0,
 			1},
 		{1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			1},
@@ -87,14 +70,8 @@ int worldMap[mapWidth][mapHeight] =
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			1}};
 
-void	render(void *param)
+void	render(t_vars *vars)
 {
-	t_vars	*vars;
-	double	posX;
-	double	posY;
-	double	dirX;
-	double	dirY;
-	double	planeX;
 	double	rayDirX;
 	double	rayDirY;
 	int		mapX;
@@ -112,12 +89,6 @@ void	render(void *param)
 	int		color;
 	double	cameraX;
 
-	vars = param;
-	posX = *vars->posX;
-	posY = *vars->posY;
-	dirX = *vars->dirX;
-	dirY = *vars->dirY;
-	planeX = *vars->planeX;
 	/*memset(vars->img->pixels, 0, vars->img->width * vars->img->height
 			* sizeof(uint8_t));*/
 	for (int x = 0; x < screenWidth; x++)
@@ -128,11 +99,11 @@ void	render(void *param)
 		//calculate ray position and direction
 		cameraX = 2 * x / (double)screenWidth - 1;
 		//x-coordinate in camera space
-		rayDirX = dirX + planeX * cameraX;
-		rayDirY = dirY + *vars->planeY * cameraX;
+		rayDirX = vars->dirX + vars->planeX * cameraX;
+		rayDirY = vars->dirY + vars->planeY * cameraX;
 		//which box of the map we're in
-		mapX = (int)posX;
-		mapY = (int)posY;
+		mapX = (int)vars->posX;
+		mapY = (int)vars->posY;
 		//length of ray from current position to next x or y-side
 		deltaDistX = (rayDirX == 0) ? 1e30 : fabs(1 / rayDirX);
 		deltaDistY = (rayDirY == 0) ? 1e30 : fabs(1 / rayDirY);
@@ -143,22 +114,22 @@ void	render(void *param)
 		if (rayDirX < 0)
 		{
 			stepX = -1;
-			sideDistX = (posX - mapX) * deltaDistX;
+			sideDistX = (vars->posX - mapX) * deltaDistX;
 		}
 		else
 		{
 			stepX = 1;
-			sideDistX = (mapX + 1.0 - posX) * deltaDistX;
+			sideDistX = (mapX + 1.0 - vars->posX) * deltaDistX;
 		}
 		if (rayDirY < 0)
 		{
 			stepY = -1;
-			sideDistY = (posY - mapY) * deltaDistY;
+			sideDistY = (vars->posY - mapY) * deltaDistY;
 		}
 		else
 		{
 			stepY = 1;
-			sideDistY = (mapY + 1.0 - posY) * deltaDistY;
+			sideDistY = (mapY + 1.0 - vars->posY) * deltaDistY;
 		}
 		//perform DDA
 		while (hit == 0)
@@ -224,59 +195,71 @@ void	render(void *param)
 
 void	hook(void *param)
 {
-	t_vars	*vars;
-	double	moveSpeed;
-	double	rotSpeed;
-	double	oldDirX;
-	double	oldPlaneX;
+	t_vars		*vars;
+	double		moveSpeed;
+	double		rotSpeed;
+	double		oldDirX;
+	double		oldPlaneX;
+	static int	frameCount;
+	static int	oldTime;
 
 	moveSpeed = 0.04;
 	rotSpeed = 0.025;
 	vars = param;
+	if (mlx_get_time() != oldTime)
+	{
+		ft_putstr_fd("Frame: ", 1);
+		ft_putnbr_fd(frameCount, 1);
+		ft_putstr_fd("\n", 1);
+		oldTime = mlx_get_time();
+		frameCount = 0;
+	}
+	frameCount++;
+	printf("---> %f -- %f \n", vars->dirX, vars->dirY);
+	printf("---> %f -- %f \n", vars->posX, vars->posY);
+	printf("---> %f -- %f \n", vars->planeX, vars->planeY);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
 		mlx_close_window(vars->mlx);
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_UP))
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_W))
 	{
-		if (worldMap[(int)(*vars->posX + *vars->dirX
-				* moveSpeed)][(int)*vars->posY] == false)
-			*vars->posX += *vars->dirX * moveSpeed;
-		if (worldMap[(int)*vars->posX][(int)(*vars->posY + *vars->dirY
+		if (worldMap[(int)(vars->posX + vars->dirX
+				* moveSpeed)][(int)vars->posY] == false)
+			vars->posX += vars->dirX * moveSpeed;
+		if (worldMap[(int)vars->posX][(int)(vars->posY + vars->dirY
 				* moveSpeed)] == false)
-			*vars->posY += *vars->dirY * moveSpeed;
+			vars->posY += vars->dirY * moveSpeed;
 	}
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_DOWN))
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_S))
 	{
-		if (worldMap[(int)(*vars->posX - *vars->dirX
-				* moveSpeed)][(int)*vars->posY] == false)
-			*vars->posX -= *vars->dirX * moveSpeed;
-		if (worldMap[(int)*vars->posX][(int)(*vars->posY - *vars->dirY
+		if (worldMap[(int)(vars->posX - vars->dirX
+				* moveSpeed)][(int)vars->posY] == false)
+			vars->posX -= vars->dirX * moveSpeed;
+		if (worldMap[(int)vars->posX][(int)(vars->posY - vars->dirY
 				* moveSpeed)] == false)
-			*vars->posY -= *vars->dirY * moveSpeed;
+			vars->posY -= vars->dirY * moveSpeed;
 	}
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT))
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_D))
 	{
 		//both camera direction and camera plane must be rotated
-		oldDirX = *vars->dirX;
-		*vars->dirX = *vars->dirX * cos(-rotSpeed) - *vars->dirY
+		oldDirX = vars->dirX;
+		vars->dirX = vars->dirX * cos(-rotSpeed) - vars->dirY * sin(-rotSpeed);
+		vars->dirY = oldDirX * sin(-rotSpeed) + vars->dirY * cos(-rotSpeed);
+		oldPlaneX = vars->planeX;
+		vars->planeX = vars->planeX * cos(-rotSpeed) - vars->planeY
 			* sin(-rotSpeed);
-		*vars->dirY = oldDirX * sin(-rotSpeed) + *vars->dirY * cos(-rotSpeed);
-		oldPlaneX = *vars->planeX;
-		*vars->planeX = *vars->planeX * cos(-rotSpeed) - *vars->planeY
-			* sin(-rotSpeed);
-		*vars->planeY = oldPlaneX * sin(-rotSpeed) + *vars->planeY
+		vars->planeY = oldPlaneX * sin(-rotSpeed) + vars->planeY
 			* cos(-rotSpeed);
 	}
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT))
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_A))
 	{
 		//both camera direction and camera plane must be rotated
-		oldDirX = *vars->dirX;
-		*vars->dirX = *vars->dirX * cos(rotSpeed) - *vars->dirY * sin(rotSpeed);
-		*vars->dirY = oldDirX * sin(rotSpeed) + *vars->dirY * cos(rotSpeed);
-		oldPlaneX = *vars->planeX;
-		*vars->planeX = *vars->planeX * cos(rotSpeed) - *vars->planeY
+		oldDirX = vars->dirX;
+		vars->dirX = vars->dirX * cos(rotSpeed) - vars->dirY * sin(rotSpeed);
+		vars->dirY = oldDirX * sin(rotSpeed) + vars->dirY * cos(rotSpeed);
+		oldPlaneX = vars->planeX;
+		vars->planeX = vars->planeX * cos(rotSpeed) - vars->planeY
 			* sin(rotSpeed);
-		*vars->planeY = oldPlaneX * sin(rotSpeed) + *vars->planeY
-			* cos(rotSpeed);
+		vars->planeY = oldPlaneX * sin(rotSpeed) + vars->planeY * cos(rotSpeed);
 	}
 	render(param);
 }
@@ -286,91 +269,21 @@ int	main(void)
 	mlx_t		*mlx;
 	mlx_image_t	*img;
 	t_vars		vars;
-	double		posX;
-	double		planeX;
-	double		posY;
-	double		planeY;
-	double		dirY;
-	double		dirX;
 
-	posX = 22;
-	posY = 12;
-	dirX = -1;
-	dirY = 0;
-	planeX = 0;
-	planeY = 0.66;
 	mlx = mlx_init(screenWidth, screenHeight, "Raycaster", false);
 	if (!mlx)
 		exit(EXIT_FAILURE);
 	img = mlx_new_image(mlx, screenWidth, screenHeight);
-	/*screen(screenWidth, screenHeight, 0, "Raycaster");*/
-	//while(!done())
-	//{
-	/*
-    //timing for input and FPS counter
-    oldTime = time;
-//TODO get time and print
-    time = getTicks();
-    frameTime = (time - oldTime) / 1000.0;
-	//frameTime is the time this frame has taken, in seconds
-    print(1.0 / frameTime); //FPS counter
-//TODO redraw
-    redraw();
-    cls();
-    //speed modifiers
-    moveSpeed = frameTime * 5.0;
-	//the constant value is in squares/second
-    double rotSpeed = frameTime * 3.0; //the constant value is in radians/second
-//TODO events
-    readKeys();
-    //move forward if no wall in front of you
-    if(keyDown(SDLK_UP))
-    {
-      if(worldMap[int(posX + dirX * moveSpeed)][int(posY)] == false) posX
-	+= dirX * moveSpeed;
-      if(worldMap[int(posX)][int(posY + dirY * moveSpeed)] == false) posY
-	+= dirY * moveSpeed;
-    }
-    //move backwards if no wall behind you
-    if(keyDown(SDLK_DOWN))
-    {
-      if(worldMap[int(posX - dirX * moveSpeed)][int(posY)] == false) posX
-	-= dirX * moveSpeed;
-      if(worldMap[int(posX)][int(posY - dirY * moveSpeed)] == false) posY
-	-= dirY * moveSpeed;
-    }
-    //rotate to the right
-    if(keyDown(SDLK_RIGHT))
-    {
-      //both camera direction and camera plane must be rotated
-      oldDirX = dirX;
-      dirX = dirX * cos(-rotSpeed) - dirY * sin(-rotSpeed);
-      dirY = oldDirX * sin(-rotSpeed) + dirY * cos(-rotSpeed);
-      oldPlaneX = planeX;
-      planeX = planeX * cos(-rotSpeed) - planeY * sin(-rotSpeed);
-      planeY = oldPlaneX * sin(-rotSpeed) + planeY * cos(-rotSpeed);
-    }
-    //rotate to the left
-    if(keyDown(SDLK_LEFT))
-    {
-      //both camera direction and camera plane must be rotated
-      oldDirX = dirX;
-      dirX = dirX * cos(rotSpeed) - dirY * sin(rotSpeed);
-      dirY = oldDirX * sin(rotSpeed) + dirY * cos(rotSpeed);
-      oldPlaneX = planeX;
-      planeX = planeX * cos(rotSpeed) - planeY * sin(rotSpeed);
-      planeY = oldPlaneX * sin(rotSpeed) + planeY * cos(rotSpeed);
-    }
-  //}
-  */
 	vars.mlx = mlx;
 	vars.img = img;
-	vars.posX = &posX;
-	vars.posY = &posY;
-	vars.dirX = &dirX;
-	vars.dirY = &dirY;
-	vars.planeX = &planeX;
-	vars.planeY = &planeY;
+	vars.posX = 22;
+	vars.posY = 12;
+	/* Para fov a 90, para calcular estos valores
+	(2 * Math.atan(1.0/1) * 180.0 / Math.PI) <-- JS*/
+	vars.dirX = -1;
+	vars.dirY = 0;
+	vars.planeX = 0;
+	vars.planeY = 1;
 	render(&vars);
 	mlx_image_to_window(mlx, img, 0, 0);
 	mlx_loop_hook(mlx, &hook, &vars);
