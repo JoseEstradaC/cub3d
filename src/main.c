@@ -6,12 +6,13 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/08/31 16:46:58 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/08/31 20:18:08 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
+int	texture[5][TEXWIDTH * TEXHEIGHT];
 int worldMap[MAPWIDTH][MAPHEIGHT] =
 	{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -140,6 +141,28 @@ void	hook(void *param)
 
 int	main(void)
 {
+	// ---- texturas de prueba
+	for (int x = 0; x < TEXWIDTH; x++) {
+		for (int y = 0; y < TEXHEIGHT; y++) {
+			int xorcolor = (x * 256 / TEXWIDTH) ^ (y * 256 / TEXHEIGHT);
+			//int xcolor = x * 256 / TEXWIDTH;
+			/*int ycolor = y * 256 / TEXHEIGHT;*/
+			int xycolor = y * 128 / TEXHEIGHT + x * 128 / TEXWIDTH;
+			texture[0][TEXWIDTH * y + x] = 65536 * 254 * (x != y && x != TEXWIDTH - y); //flat red texture with black cross
+			texture[1][TEXWIDTH * y + x] = xycolor + 256 * xycolor + 65536 * xycolor; //sloped greyscale
+			texture[2][TEXWIDTH * y + x] = 256 * xycolor + 65536 * xycolor; //sloped yellow gradient
+			texture[3][TEXWIDTH * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor; //xor greyscale
+			texture[4][TEXWIDTH * y + x] = 256 * xorcolor; //xor green
+			// Poner colores para la maravillosa MLX42
+			texture[0][TEXWIDTH * y + x] = (texture[0][TEXWIDTH * y + x] << 8) + 0xFF;
+			texture[1][TEXWIDTH * y + x] = (texture[1][TEXWIDTH * y + x] << 8) + 0xFF;
+			texture[2][TEXWIDTH * y + x] = (texture[2][TEXWIDTH * y + x] << 8) + 0xFF;
+			texture[3][TEXWIDTH * y + x] = (texture[3][TEXWIDTH * y + x] << 8) + 0xFF;
+			texture[4][TEXWIDTH * y + x] = (texture[4][TEXWIDTH * y + x] << 8) + 0xFF;
+		}
+	}
+	// ------
+
 	mlx_t		*mlx;
 	mlx_image_t	*img;
 	t_vars		vars;

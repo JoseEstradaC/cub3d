@@ -17,15 +17,15 @@ void	clean_img(mlx_image_t *img)
 	int	x;
 	int	y;
 
-	x = 0;
-	while (x < SCREENWIDTH)
+	y = 0;
+	while (y < SCREENHEIGHT)
 	{
-		y = 0;
-		while (y < SCREENHEIGHT)
+		x = 0;
+		while (x < SCREENWIDTH)
 		{
 			mlx_put_pixel(img, x, y, 0);
-			y++;
+			x++;
 		}
-		x++;
+		y++;
 	}
 }

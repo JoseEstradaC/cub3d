@@ -123,7 +123,7 @@ double	perform_dda(t_pos *pos, t_dir *dir, int *side)
 		return (dir->side_dist_y - pos->delta_dist_y);
 }
 
-t_vline	calc_vline(double perpWallDist, t_pos *pos, int side)
+t_vline	calc_vline(double perpWallDist, t_pos *pos, int side, t_vars *vars, int x)
 {
 	t_vline	vline;
 	int		line_height;
@@ -136,6 +136,7 @@ t_vline	calc_vline(double perpWallDist, t_pos *pos, int side)
 	vline.draw_end = line_height / 2 + SCREENHEIGHT / 2;
 	if (vline.draw_end >= SCREENHEIGHT)
 		vline.draw_end = SCREENHEIGHT - 1;
+	/*
 	box = worldMap[pos->map_x][pos->map_y];
 	if (box == 1)
 		vline.color = 0xFF0000FF;
@@ -150,6 +151,34 @@ t_vline	calc_vline(double perpWallDist, t_pos *pos, int side)
 	if (side == 1)
 		vline.color = vline.color - 88;
 	return (vline);
+	*/
+	box = worldMap[pos->map_x][pos->map_y] - 1;
+	double	wall_x;
+	if (side == 0)
+		wall_x = vars->posY + perpWallDist * pos->ray_dir_y;
+	else
+		wall_x = vars->posX + perpWallDist * pos->ray_dir_x;
+	wall_x -= (int)wall_x;
+
+	int	tex_x = (int)(wall_x * (double)TEXWIDTH);
+	if (side == 0 && pos->ray_dir_x > 0)
+		tex_x = TEXWIDTH - tex_x - 1;
+	if (side == 1 && pos->ray_dir_y < 0)
+		tex_x = TEXWIDTH - tex_x - 1;
+
+	double	step = 1.0 * TEXHEIGHT / line_height;
+	double	tex_pos = (vline.draw_start - SCREENHEIGHT / 2 + line_height / 2) * step;
+	for (int y = vline.draw_start; y < vline.draw_end; y++)
+	{
+		int	tex_y = (int)tex_pos & (TEXHEIGHT - 1);
+		tex_pos += step;
+		vline.color = texture[box][TEXHEIGHT * tex_y + tex_x];
+		if (side == 1)
+			vline.color = (vline.color >> 1) & 0x7f7f7fff;
+		mlx_put_pixel(vars->img, x, y, vline.color);
+	}
+
+	return (vline);
 }
 
 void	render(t_vars *vars)
@@ -158,7 +187,7 @@ void	render(t_vars *vars)
 	int				side;
 	t_vline			vline;
 	int				x;
-	int				y;
+	/*int				y;*/
 
 	clean_img(vars->img);
 	x = 0;
@@ -167,13 +196,13 @@ void	render(t_vars *vars)
 		r_vars.pos = calc_pos(vars, x);
 		r_vars.dir = calc_dir(vars, &r_vars.pos);
 		vline = calc_vline(perform_dda(&r_vars.pos, &r_vars.dir, &side),
-				&r_vars.pos, side);
-		y = vline.draw_start;
-		while (y < vline.draw_end)
-		{
-			mlx_put_pixel(vars->img, x, y, vline.color);
-			y++;
-		}
+				&r_vars.pos, side, vars, x);
+		/*y = vline.draw_start;*/
+		/*while (y < vline.draw_end)*/
+		/*{*/
+			/*mlx_put_pixel(vars->img, x, y, vline.color);*/
+			/*y++;*/
+		/*}*/
 		x++;
 	}
 }

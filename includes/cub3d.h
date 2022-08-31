@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 21:52:30 by jestrada          #+#    #+#             */
-/*   Updated: 2022/08/31 15:39:37 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/08/31 19:16:50 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,15 @@
 
 # define SCREENWIDTH 1920
 # define SCREENHEIGHT 1080
+# define TEXWIDTH 64
+# define TEXHEIGHT 64
 # define MAPWIDTH 24
 # define MAPHEIGHT 24
 
 //place the example code below here:
 
 extern int worldMap[MAPWIDTH][MAPHEIGHT];
+extern int	texture[5][TEXWIDTH * TEXHEIGHT];
 
 typedef struct s_vars
 {
