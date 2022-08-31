@@ -6,20 +6,15 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/08/30 20:02:42 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/08/31 10:52:18 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube3d.h"
-
-/*
-g++ *.cpp -lSDL -O3 -W -Wall -ansi -pedantic
-g++ *.cpp -lSDL
-*/
+#include "cub3d.h"
 
 //place the example code below here:
 
-int worldMap[mapWidth][mapHeight] =
+int worldMap[MAPWIDTH][MAPHEIGHT] =
 	{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			1},
@@ -91,13 +86,13 @@ void	render(t_vars *vars)
 
 	/*memset(vars->img->pixels, 0, vars->img->width * vars->img->height
 			* sizeof(uint8_t));*/
-	for (int x = 0; x < screenWidth; x++)
-		for (int y = 0; y < screenHeight; y++)
+	for (int x = 0; x < SCREENWIDTH; x++)
+		for (int y = 0; y < SCREENHEIGHT; y++)
 			mlx_put_pixel(vars->img, x, y, 0);
-	for (int x = 0; x < screenWidth; x++)
+	for (int x = 0; x < SCREENWIDTH; x++)
 	{
 		//calculate ray position and direction
-		cameraX = 2 * x / (double)screenWidth - 1;
+		cameraX = 2 * x / (double)SCREENWIDTH - 1;
 		//x-coordinate in camera space
 		rayDirX = vars->dirX + vars->planeX * cameraX;
 		rayDirY = vars->dirY + vars->planeY * cameraX;
@@ -156,14 +151,14 @@ void	render(t_vars *vars)
 		else
 			perpWallDist = (sideDistY - deltaDistY);
 		//Calculate height of line to draw on screen
-		lineHeight = (int)(screenHeight / perpWallDist);
+		lineHeight = (int)(SCREENHEIGHT / perpWallDist);
 		//calculate lowest and highest pixel to fill in current stripe
-		drawStart = -lineHeight / 2 + screenHeight / 2;
+		drawStart = -lineHeight / 2 + SCREENHEIGHT / 2;
 		if (drawStart < 0)
 			drawStart = 0;
-		drawEnd = lineHeight / 2 + screenHeight / 2;
-		if (drawEnd >= screenHeight)
-			drawEnd = screenHeight - 1;
+		drawEnd = lineHeight / 2 + SCREENHEIGHT / 2;
+		if (drawEnd >= SCREENHEIGHT)
+			drawEnd = SCREENHEIGHT - 1;
 		switch (worldMap[mapX][mapY])
 		{
 		case 1:
@@ -270,10 +265,10 @@ int	main(void)
 	mlx_image_t	*img;
 	t_vars		vars;
 
-	mlx = mlx_init(screenWidth, screenHeight, "Raycaster", false);
+	mlx = mlx_init(SCREENWIDTH, SCREENHEIGHT, "Raycaster", false);
 	if (!mlx)
 		exit(EXIT_FAILURE);
-	img = mlx_new_image(mlx, screenWidth, screenHeight);
+	img = mlx_new_image(mlx, SCREENWIDTH, SCREENHEIGHT);
 	vars.mlx = mlx;
 	vars.img = img;
 	vars.posX = 22;

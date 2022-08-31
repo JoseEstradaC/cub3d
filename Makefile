@@ -6,11 +6,11 @@
 #    By: jestrada <jestrada@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/01 04:21:55 by jestrada          #+#    #+#              #
-#    Updated: 2022/08/30 17:38:16 by jestrada         ###   ########.fr        #
+#    Updated: 2022/08/31 10:51:34 by jarredon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	= cube3d
+NAME	= cub3d
 
 # src / obj files
 SRC		=	main.c

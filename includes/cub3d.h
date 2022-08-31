@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 21:52:30 by jestrada          #+#    #+#             */
-/*   Updated: 2022/08/30 19:16:20 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/08/31 10:45:54 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@
 # include <stdlib.h>
 # include <string.h>
 
-# define screenWidth 1920
-# define screenHeight 1080
-# define mapWidth 24
-# define mapHeight 24
+# define SCREENWIDTH 1920
+# define SCREENHEIGHT 1080
+# define MAPWIDTH 24
+# define MAPHEIGHT 24
 
 typedef struct s_vars
 {
