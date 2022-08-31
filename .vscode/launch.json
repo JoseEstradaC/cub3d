@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Debug",
             "stopOnEntry": false,
-            "program": "${workspaceFolder}/cube3d",
+            "program": "${workspaceFolder}/cub3d",
             "args": [],
             "cwd": "${workspaceFolder}"
         }

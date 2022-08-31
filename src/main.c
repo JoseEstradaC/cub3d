@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/08/31 12:37:09 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/08/31 12:51:04 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,8 @@ void	hook(void *param)
 		ft_putnbr_fd(frameCount, 1);
 		ft_putstr_fd("\n", 1);
 		oldTime = mlx_get_time();
-		mlx_delete_image(vars->mlx, old_img_text);
+		if (old_img_text != NULL)
+			mlx_delete_image(vars->mlx, old_img_text);
 		strFPS = ft_itoa(frameCount);
 		old_img_text = mlx_put_string(vars->mlx, strFPS, 0, 0);
 		free(strFPS);
