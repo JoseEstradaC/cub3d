@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/08/31 10:52:18 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/08/31 12:37:09 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,13 +190,15 @@ void	render(t_vars *vars)
 
 void	hook(void *param)
 {
-	t_vars		*vars;
-	double		moveSpeed;
-	double		rotSpeed;
-	double		oldDirX;
-	double		oldPlaneX;
-	static int	frameCount;
-	static int	oldTime;
+	t_vars				*vars;
+	double				moveSpeed;
+	double				rotSpeed;
+	double				oldDirX;
+	double				oldPlaneX;
+	static int			frameCount;
+	static int			oldTime;
+	static mlx_image_t	*old_img_text;
+	char				*strFPS;
 
 	moveSpeed = 0.04;
 	rotSpeed = 0.025;
@@ -207,12 +209,16 @@ void	hook(void *param)
 		ft_putnbr_fd(frameCount, 1);
 		ft_putstr_fd("\n", 1);
 		oldTime = mlx_get_time();
+		mlx_delete_image(vars->mlx, old_img_text);
+		strFPS = ft_itoa(frameCount);
+		old_img_text = mlx_put_string(vars->mlx, strFPS, 0, 0);
+		free(strFPS);
 		frameCount = 0;
 	}
 	frameCount++;
-	printf("---> %f -- %f \n", vars->dirX, vars->dirY);
+	/*printf("---> %f -- %f \n", vars->dirX, vars->dirY);
 	printf("---> %f -- %f \n", vars->posX, vars->posY);
-	printf("---> %f -- %f \n", vars->planeX, vars->planeY);
+	printf("---> %f -- %f \n", vars->planeX, vars->planeY);*/
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
 		mlx_close_window(vars->mlx);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_W))
