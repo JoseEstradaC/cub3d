@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/08/31 13:44:06 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/08/31 16:46:58 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,129 +63,6 @@ int worldMap[MAPWIDTH][MAPHEIGHT] =
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			1}};
 
-/*
-void	render(t_vars *vars)
-{
-	double	rayDirX;
-	double	rayDirY;
-	int		mapX;
-	int		mapY;
-	double	sideDistX;
-	double	sideDistY;
-	double	deltaDistX;
-	double	deltaDistY;
-	double	perpWallDist;
-	int		stepX;
-	int		stepY;
-	int		lineHeight;
-	int		drawStart;
-	int		drawEnd;
-	int		color;
-	double	cameraX;
-
-	for (int x = 0; x < SCREENWIDTH; x++)
-		for (int y = 0; y < SCREENHEIGHT; y++)
-			mlx_put_pixel(vars->img, x, y, 0);
-	for (int x = 0; x < SCREENWIDTH; x++)
-	{
-		//calculate ray position and direction
-		cameraX = 2 * x / (double)SCREENWIDTH - 1;
-		//x-coordinate in camera space
-		rayDirX = vars->dirX + vars->planeX * cameraX;
-		rayDirY = vars->dirY + vars->planeY * cameraX;
-		//which box of the map we're in
-		mapX = (int)vars->posX;
-		mapY = (int)vars->posY;
-		//length of ray from current position to next x or y-side
-		deltaDistX = (rayDirX == 0) ? 1e30 : fabs(1 / rayDirX);
-		deltaDistY = (rayDirY == 0) ? 1e30 : fabs(1 / rayDirY);
-		//what direction to step in x or y-direction (either +1 or -1)
-		int hit = 0; //was there a wall hit?
-		int side;    //was a NS or a EW wall hit?
-		//calculate step and initial sideDist
-		if (rayDirX < 0)
-		{
-			stepX = -1;
-			sideDistX = (vars->posX - mapX) * deltaDistX;
-		}
-		else
-		{
-			stepX = 1;
-			sideDistX = (mapX + 1.0 - vars->posX) * deltaDistX;
-		}
-		if (rayDirY < 0)
-		{
-			stepY = -1;
-			sideDistY = (vars->posY - mapY) * deltaDistY;
-		}
-		else
-		{
-			stepY = 1;
-			sideDistY = (mapY + 1.0 - vars->posY) * deltaDistY;
-		}
-		//perform DDA
-		while (hit == 0)
-		{
-			//jump to next map square, either in x-direction, or in y-direction
-			if (sideDistX < sideDistY)
-			{
-				sideDistX += deltaDistX;
-				mapX += stepX;
-				side = 0;
-			}
-			else
-			{
-				sideDistY += deltaDistY;
-				mapY += stepY;
-				side = 1;
-			}
-			//Check if ray has hit a wall
-			if (worldMap[mapX][mapY] > 0)
-				hit = 1;
-		}
-		if (side == 0)
-			perpWallDist = (sideDistX - deltaDistX);
-		else
-			perpWallDist = (sideDistY - deltaDistY);
-		//Calculate height of line to draw on screen
-		lineHeight = (int)(SCREENHEIGHT / perpWallDist);
-		//calculate lowest and highest pixel to fill in current stripe
-		drawStart = -lineHeight / 2 + SCREENHEIGHT / 2;
-		if (drawStart < 0)
-			drawStart = 0;
-		drawEnd = lineHeight / 2 + SCREENHEIGHT / 2;
-		if (drawEnd >= SCREENHEIGHT)
-			drawEnd = SCREENHEIGHT - 1;
-		switch (worldMap[mapX][mapY])
-		{
-		case 1:
-			color = 0xFF0000FF;
-			break ; //red
-		case 2:
-			color = 0x00FF00FF;
-			break ; //green
-		case 3:
-			color = 0x0000FFFF;
-			break ; //blue
-		case 4:
-			color = 0xFFFFFFFF;
-			break ; //white
-		default:
-			color = 0xFFFF00FF;
-			break ; //yellow
-		}
-		//give x and y sides different brightness
-		if (side == 1)
-		{
-			color = color - 88;
-		}
-		//draw the pixels of the stripe as a vertical line
-		for (int y = drawStart; y < drawEnd; y++)
-			mlx_put_pixel(vars->img, x, y, color);
-	}
-}
-*/
-
 void	hook(void *param)
 {
 	t_vars				*vars;
@@ -215,9 +92,6 @@ void	hook(void *param)
 		frameCount = 0;
 	}
 	frameCount++;
-	/*printf("---> %f -- %f \n", vars->dirX, vars->dirY);
-	printf("---> %f -- %f \n", vars->posX, vars->posY);
-	printf("---> %f -- %f \n", vars->planeX, vars->planeY);*/
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
 		mlx_close_window(vars->mlx);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_W))

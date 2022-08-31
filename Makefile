@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jestrada <jestrada@student.42malaga.com    +#+  +:+       +#+         #
+#    By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/01 04:21:55 by jestrada          #+#    #+#              #
-#    Updated: 2022/08/31 15:40:26 by jarredon         ###   ########.fr        #
+#    Updated: 2022/08/31 16:44:09 by jestrada         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,11 +58,11 @@ $(NAME): $(OBJ)
 clean:
 	rm -rf $(OBJDIR)
 	make -C $(MLX) clean
-	make -C $(MLX) clean
+	make -C $(FT) clean
 
 fclean: clean
 	rm -rf $(NAME)
-	make -C $(FT) fclean
+	make -C $(MLX) fclean
 	make -C $(FT) fclean
 
 r: all

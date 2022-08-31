@@ -18,7 +18,12 @@ INCLUDE_DIR	:= include
 
 override HEADERS += -I $(INCLUDE_DIR)
 
-CFLAGS := -Wextra -Wall -Werror -Wunreachable-code -Wno-char-subscripts -Wno-sign-compare -g
+CFLAGS := -Wextra -Wall -Werror -Wunreachable-code -Wno-char-subscripts -Wno-sign-compare
+ifdef DEBUG
+	CFLAGS += -g
+else
+	CFLAGS	+= -Ofast -D NDEBUG
+endif
 
 # Recursive wildcard/find function, the subst is to guarantee unix file paths
 rwildcard = $(subst \,/,$(sort $(foreach d,$(wildcard $1/*),$(call rwildcard,$d,$2) $(wildcard $1/$2))))
