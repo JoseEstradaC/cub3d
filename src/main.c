@@ -6,13 +6,11 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/08/31 12:51:04 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/08/31 13:44:06 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-//place the example code below here:
 
 int worldMap[MAPWIDTH][MAPHEIGHT] =
 	{
@@ -65,6 +63,7 @@ int worldMap[MAPWIDTH][MAPHEIGHT] =
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			1}};
 
+/*
 void	render(t_vars *vars)
 {
 	double	rayDirX;
@@ -84,8 +83,6 @@ void	render(t_vars *vars)
 	int		color;
 	double	cameraX;
 
-	/*memset(vars->img->pixels, 0, vars->img->width * vars->img->height
-			* sizeof(uint8_t));*/
 	for (int x = 0; x < SCREENWIDTH; x++)
 		for (int y = 0; y < SCREENHEIGHT; y++)
 			mlx_put_pixel(vars->img, x, y, 0);
@@ -187,6 +184,7 @@ void	render(t_vars *vars)
 			mlx_put_pixel(vars->img, x, y, color);
 	}
 }
+*/
 
 void	hook(void *param)
 {

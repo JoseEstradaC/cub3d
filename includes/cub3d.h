@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 21:52:30 by jestrada          #+#    #+#             */
-/*   Updated: 2022/08/31 12:39:03 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/08/31 15:39:37 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,10 @@
 # define MAPWIDTH 24
 # define MAPHEIGHT 24
 
+//place the example code below here:
+
+extern int worldMap[MAPWIDTH][MAPHEIGHT];
+
 typedef struct s_vars
 {
 	mlx_t		*mlx;
@@ -36,5 +40,8 @@ typedef struct s_vars
 	double		planeX;
 	double		planeY;
 }				t_vars;
+
+void	clean_img(mlx_image_t *img);
+void	render(t_vars *vars);
 
 #endif
