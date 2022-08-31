@@ -13,6 +13,8 @@
 #include "cub3d.h"
 
 int	texture[5][TEXWIDTH * TEXHEIGHT];
+mlx_texture_t	*textures[5];
+
 int worldMap[MAPWIDTH][MAPHEIGHT] =
 	{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -162,6 +164,12 @@ int	main(void)
 		}
 	}
 	// ------
+	textures[0] = mlx_load_png("pics/redbrick.png");
+	textures[1] = mlx_load_png("pics/bluestone.png");
+	textures[2] = mlx_load_png("pics/colorstone.png");
+	textures[3] = mlx_load_png("pics/eagle.png");
+	textures[4] = mlx_load_png("pics/wood.png");
+	// -----
 
 	mlx_t		*mlx;
 	mlx_image_t	*img;

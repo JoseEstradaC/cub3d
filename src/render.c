@@ -97,10 +97,7 @@ t_dir	calc_dir(t_vars *vars, t_pos *pos)
 // return perpendicular wall distance
 double	perform_dda(t_pos *pos, t_dir *dir, int *side)
 {
-	int	hit;
-
-	hit = 0;
-	while (hit == 0)
+	while (worldMap[pos->map_x][pos->map_y] <= 0)
 	{
 		if (dir->side_dist_x < dir->side_dist_y)
 		{
@@ -114,8 +111,6 @@ double	perform_dda(t_pos *pos, t_dir *dir, int *side)
 			pos->map_y += dir->step_y;
 			*side = 1;
 		}
-		if (worldMap[pos->map_x][pos->map_y] > 0)
-			hit = 1;
 	}
 	if (*side == 0)
 		return (dir->side_dist_x - pos->delta_dist_x);
@@ -153,6 +148,10 @@ t_vline	calc_vline(double perpWallDist, t_pos *pos, int side, t_vars *vars, int 
 	return (vline);
 	*/
 	box = worldMap[pos->map_x][pos->map_y] - 1;
+
+	int	tex_width = textures[box]->width;
+	int	tex_height = textures[box]->height;
+
 	double	wall_x;
 	if (side == 0)
 		wall_x = vars->posY + perpWallDist * pos->ray_dir_y;
@@ -160,19 +159,20 @@ t_vline	calc_vline(double perpWallDist, t_pos *pos, int side, t_vars *vars, int 
 		wall_x = vars->posX + perpWallDist * pos->ray_dir_x;
 	wall_x -= (int)wall_x;
 
-	int	tex_x = (int)(wall_x * (double)TEXWIDTH);
+	int	tex_x = (int)(wall_x * (double)tex_width);
 	if (side == 0 && pos->ray_dir_x > 0)
-		tex_x = TEXWIDTH - tex_x - 1;
+		tex_x = tex_width - tex_x - 1;
 	if (side == 1 && pos->ray_dir_y < 0)
-		tex_x = TEXWIDTH - tex_x - 1;
+		tex_x = tex_width - tex_x - 1;
 
-	double	step = 1.0 * TEXHEIGHT / line_height;
+	double	step = 1.0 * tex_height / line_height;
 	double	tex_pos = (vline.draw_start - SCREENHEIGHT / 2 + line_height / 2) * step;
 	for (int y = vline.draw_start; y < vline.draw_end; y++)
 	{
-		int	tex_y = (int)tex_pos & (TEXHEIGHT - 1);
+		int	tex_y = (int)tex_pos & (tex_height - 1);
 		tex_pos += step;
-		vline.color = texture[box][TEXHEIGHT * tex_y + tex_x];
+		uint8_t	*pix = &textures[box]->pixels[tex_height * tex_y * 4 + tex_x * 4];
+		vline.color = (pix[0] << 24) | (pix[1] << 16) | (pix[2] << 8) | pix[3];
 		if (side == 1)
 			vline.color = (vline.color >> 1) & 0x7f7f7fff;
 		mlx_put_pixel(vars->img, x, y, vline.color);
@@ -185,7 +185,7 @@ void	render(t_vars *vars)
 {
 	t_render_vars	r_vars;
 	int				side;
-	t_vline			vline;
+	/*t_vline			vline;*/
 	int				x;
 	/*int				y;*/
 
@@ -195,7 +195,7 @@ void	render(t_vars *vars)
 	{
 		r_vars.pos = calc_pos(vars, x);
 		r_vars.dir = calc_dir(vars, &r_vars.pos);
-		vline = calc_vline(perform_dda(&r_vars.pos, &r_vars.dir, &side),
+		calc_vline(perform_dda(&r_vars.pos, &r_vars.dir, &side),
 				&r_vars.pos, side, vars, x);
 		/*y = vline.draw_start;*/
 		/*while (y < vline.draw_end)*/

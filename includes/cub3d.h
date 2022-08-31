@@ -31,6 +31,7 @@
 
 extern int worldMap[MAPWIDTH][MAPHEIGHT];
 extern int	texture[5][TEXWIDTH * TEXHEIGHT];
+extern mlx_texture_t	*textures[5];
 
 typedef struct s_vars
 {
