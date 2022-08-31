@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   render.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/31 16:50:50 by jestrada          #+#    #+#             */
+/*   Updated: 2022/08/31 16:51:35 by jestrada         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 typedef struct s_pos
@@ -26,10 +38,10 @@ typedef struct s_render_vars
 
 typedef struct s_vline
 {
-	int	draw_start;
-	int	draw_end;
-	int	color;
-}		t_vline;
+	int		draw_start;
+	int		draw_end;
+	int		color;
+}			t_vline;
 
 // Calculate x-coordinate in camera space, which box of the map,
 // and length of ray from current position to next x or y-side
@@ -85,7 +97,7 @@ t_dir	calc_dir(t_vars *vars, t_pos *pos)
 // return perpendicular wall distance
 double	perform_dda(t_pos *pos, t_dir *dir, int *side)
 {
-	int		hit;
+	int	hit;
 
 	hit = 0;
 	while (hit == 0)
