@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:50 by jestrada          #+#    #+#             */
-/*   Updated: 2022/08/31 16:51:35 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/01 21:22:58 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ typedef struct s_dir
 	int		step_y;
 	double	side_dist_x;
 	double	side_dist_y;
+	int		side;
+	double	perp_wall_dist;
 }			t_dir;
 
 typedef struct s_render_vars
@@ -41,30 +43,15 @@ typedef struct s_vline
 	int		draw_start;
 	int		draw_end;
 	int		color;
+	int		box;
+	int		line_height;
+	int		tex_width;
+	int		tex_height;
+	int		tex_x;
+	int		tex_y;
 }			t_vline;
 
-// Calculate x-coordinate in camera space, which box of the map,
-// and length of ray from current position to next x or y-side
-t_pos	calc_pos(t_vars *vars, int x)
-{
-	t_pos	pos;
-	double	camera_x;
-
-	camera_x = 2 * x / (double)SCREENWIDTH - 1;
-	pos.ray_dir_x = vars->dirX + vars->planeX * camera_x;
-	pos.ray_dir_y = vars->dirY + vars->planeY * camera_x;
-	pos.map_x = (int)vars->posX;
-	pos.map_y = (int)vars->posY;
-	if (pos.ray_dir_x == 0)
-		pos.delta_dist_x = 1e30;
-	else
-		pos.delta_dist_x = fabs(1 / pos.ray_dir_x);
-	if (pos.ray_dir_y == 0)
-		pos.delta_dist_y = 1e30;
-	else
-		pos.delta_dist_y = fabs(1 / pos.ray_dir_y);
-	return (pos);
-}
+t_pos	calc_pos(t_vars *vars, int x);
 
 // Calculate step and initial sideDist
 t_dir	calc_dir(t_vars *vars, t_pos *pos)
@@ -74,120 +61,109 @@ t_dir	calc_dir(t_vars *vars, t_pos *pos)
 	if (pos->ray_dir_x < 0)
 	{
 		dir.step_x = -1;
-		dir.side_dist_x = (vars->posX - pos->map_x) * pos->delta_dist_x;
+		dir.side_dist_x = (vars->pos_x - pos->map_x) * pos->delta_dist_x;
 	}
 	else
 	{
 		dir.step_x = 1;
-		dir.side_dist_x = (pos->map_x + 1.0 - vars->posX) * pos->delta_dist_x;
+		dir.side_dist_x = (pos->map_x + 1.0 - vars->pos_x) * pos->delta_dist_x;
 	}
 	if (pos->ray_dir_y < 0)
 	{
 		dir.step_y = -1;
-		dir.side_dist_y = (vars->posY - pos->map_y) * pos->delta_dist_y;
+		dir.side_dist_y = (vars->pos_y - pos->map_y) * pos->delta_dist_y;
 	}
 	else
 	{
 		dir.step_y = 1;
-		dir.side_dist_y = (pos->map_y + 1.0 - vars->posY) * pos->delta_dist_y;
+		dir.side_dist_y = (pos->map_y + 1.0 - vars->pos_y) * pos->delta_dist_y;
 	}
 	return (dir);
 }
 
-// return perpendicular wall distance
-double	perform_dda(t_pos *pos, t_dir *dir, int *side)
+// return line height
+int	perform_dda(t_pos *pos, t_dir *dir)
 {
-	while (worldMap[pos->map_x][pos->map_y] <= 0)
+	while (g_world_map[pos->map_x][pos->map_y] <= 0)
 	{
 		if (dir->side_dist_x < dir->side_dist_y)
 		{
 			dir->side_dist_x += pos->delta_dist_x;
 			pos->map_x += dir->step_x;
-			*side = 0;
+			dir->side = 0;
 		}
 		else
 		{
 			dir->side_dist_y += pos->delta_dist_y;
 			pos->map_y += dir->step_y;
-			*side = 1;
+			dir->side = 1;
 		}
 	}
-	if (*side == 0)
-		return (dir->side_dist_x - pos->delta_dist_x);
+	if (dir->side == 0)
+		dir->perp_wall_dist = dir->side_dist_x - pos->delta_dist_x;
 	else
-		return (dir->side_dist_y - pos->delta_dist_y);
+		dir->perp_wall_dist = dir->side_dist_y - pos->delta_dist_y;
+	return ((int)(SCREENHEIGHT / dir->perp_wall_dist));
 }
 
-t_vline	calc_vline(double perpWallDist, t_pos *pos, int side, t_vars *vars, int x)
+t_vline	calc_vline(int line_height, t_pos *pos, t_dir *dir, t_vars *vars)
 {
 	t_vline	vline;
-	int		line_height;
-	int		box;
+	double	wall_x;
 
-	line_height = (int)(SCREENHEIGHT / perpWallDist);
 	vline.draw_start = -line_height / 2 + SCREENHEIGHT / 2;
 	if (vline.draw_start < 0)
 		vline.draw_start = 0;
 	vline.draw_end = line_height / 2 + SCREENHEIGHT / 2;
 	if (vline.draw_end >= SCREENHEIGHT)
 		vline.draw_end = SCREENHEIGHT - 1;
-	/*
-	box = worldMap[pos->map_x][pos->map_y];
-	if (box == 1)
-		vline.color = 0xFF0000FF;
-	else if (box == 2)
-		vline.color = 0x00FF00FF;
-	else if (box == 3)
-		vline.color = 0x0000FFFF;
-	else if (box == 4)
-		vline.color = 0xFFFFFFFF;
+	vline.box = g_world_map[pos->map_x][pos->map_y] - 1;
+	vline.tex_width = g_textures[vline.box]->width;
+	vline.tex_height = g_textures[vline.box]->height;
+	if (dir->side == 0)
+		wall_x = vars->pos_y + dir->perp_wall_dist * pos->ray_dir_y;
 	else
-		vline.color = 0xFFFF00FF;
-	if (side == 1)
-		vline.color = vline.color - 88;
-	return (vline);
-	*/
-	box = worldMap[pos->map_x][pos->map_y] - 1;
-
-	int	tex_width = textures[box]->width;
-	int	tex_height = textures[box]->height;
-
-	double	wall_x;
-	if (side == 0)
-		wall_x = vars->posY + perpWallDist * pos->ray_dir_y;
-	else
-		wall_x = vars->posX + perpWallDist * pos->ray_dir_x;
+		wall_x = vars->pos_x + dir->perp_wall_dist * pos->ray_dir_x;
 	wall_x -= (int)wall_x;
-
-	int	tex_x = (int)(wall_x * (double)tex_width);
-	if (side == 0 && pos->ray_dir_x > 0)
-		tex_x = tex_width - tex_x - 1;
-	if (side == 1 && pos->ray_dir_y < 0)
-		tex_x = tex_width - tex_x - 1;
-
-	double	step = 1.0 * tex_height / line_height;
-	double	tex_pos = (vline.draw_start - SCREENHEIGHT / 2 + line_height / 2) * step;
-	for (int y = vline.draw_start; y < vline.draw_end; y++)
-	{
-		int	tex_y = (int)tex_pos & (tex_height - 1);
-		tex_pos += step;
-		uint8_t	*pix = &textures[box]->pixels[tex_height * tex_y * 4 + tex_x * 4];
-		vline.color = (pix[0] << 24) | (pix[1] << 16) | (pix[2] << 8) | pix[3];
-		if (side == 1)
-			vline.color = (vline.color >> 1) & 0x7f7f7fff;
-		mlx_put_pixel(vars->img, x, y, vline.color);
-	}
-
+	vline.tex_x = (int)(wall_x * (double)vline.tex_width);
+	if (dir->side == 0 && pos->ray_dir_x > 0)
+		vline.tex_x = vline.tex_width - vline.tex_x - 1;
+	if (dir->side == 1 && pos->ray_dir_y < 0)
+		vline.tex_x = vline.tex_width - vline.tex_x - 1;
+	vline.line_height = line_height;
 	return (vline);
+}
+
+void	print_line(t_vars *vars, int x, t_dir *dir, t_vline *vline)
+{
+	double	step;
+	double	tex_pos;
+	int		y;
+	uint8_t	*pix;
+
+	step = 1.0 * vline->tex_height / vline->line_height;
+	tex_pos = (vline->draw_start - SCREENHEIGHT / 2 + vline->line_height / 2)
+		* step;
+	y = vline->draw_start;
+	while (y < vline->draw_end)
+	{
+		vline->tex_y = (int)tex_pos & (vline->tex_height - 1);
+		tex_pos += step;
+		pix = &g_textures[vline->box]->pixels[vline->tex_height
+			* vline->tex_y * 4 + vline->tex_x * 4];
+		vline->color = (pix[0] << 24) | (pix[1] << 16) | (pix[2] << 8) | pix[3];
+		if (dir->side == 1)
+			vline->color = (vline->color >> 1) & 0x7f7f7fff;
+		mlx_put_pixel(vars->img, x, y, vline->color);
+		y++;
+	}
 }
 
 void	render(t_vars *vars)
 {
 	t_render_vars	r_vars;
-	int				side;
-	/*t_vline			vline;*/
 	int				x;
-	/*int				y;*/
+	t_vline			vline;
 
 	clean_img(vars->img);
 	x = 0;
@@ -195,14 +171,9 @@ void	render(t_vars *vars)
 	{
 		r_vars.pos = calc_pos(vars, x);
 		r_vars.dir = calc_dir(vars, &r_vars.pos);
-		calc_vline(perform_dda(&r_vars.pos, &r_vars.dir, &side),
-				&r_vars.pos, side, vars, x);
-		/*y = vline.draw_start;*/
-		/*while (y < vline.draw_end)*/
-		/*{*/
-			/*mlx_put_pixel(vars->img, x, y, vline.color);*/
-			/*y++;*/
-		/*}*/
+		vline = calc_vline(perform_dda(&r_vars.pos, &r_vars.dir),
+				&r_vars.pos, &r_vars.dir, vars);
+		print_line(vars, x, &r_vars.dir, &vline);
 		x++;
 	}
 }
