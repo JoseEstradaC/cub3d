@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:55 by jestrada          #+#    #+#             */
-/*   Updated: 2022/08/31 16:51:19 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/01 18:04:19 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,22 @@ void	clean_img(mlx_image_t *img)
 	int	y;
 
 	y = 0;
+	while (y < SCREENHEIGHT / 2)
+	{
+		x = 0;
+		while (x < SCREENWIDTH)
+		{
+			mlx_put_pixel(img, x, y, 0x3c75deff);
+			x++;
+		}
+		y++;
+	}
 	while (y < SCREENHEIGHT)
 	{
 		x = 0;
 		while (x < SCREENWIDTH)
 		{
-			mlx_put_pixel(img, x, y, 0);
+			mlx_put_pixel(img, x, y, 0x32a852ff);
 			x++;
 		}
 		y++;
