@@ -117,7 +117,7 @@ t_vline	calc_vline(int line_height, t_pos *pos, t_dir *dir, t_vars *vars)
 		vline.draw_start = 0;
 	vline.draw_end = line_height / 2 + SCREENHEIGHT / 2;
 	if (vline.draw_end >= SCREENHEIGHT)
-		vline.draw_end = SCREENHEIGHT - 1;
+		vline.draw_end = SCREENHEIGHT;
 	vline.box = get_side(dir->side, pos->map_x - vars->pos_x,
 			pos->map_y - vars->pos_y);
 	vline.tex_width = g_textures[vline.box]->width;
