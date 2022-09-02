@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:55 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/01 21:23:25 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/02 13:11:39 by jose             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,15 @@ t_pos	calc_pos(t_vars *vars, int x)
 	else
 		pos.delta_dist_y = fabs(1 / pos.ray_dir_y);
 	return (pos);
+}
+
+// Return NO, SO, WE or EA
+// x_dire = pos->map_x - vars->pos_x
+int	get_side(int side, int x_dire, int y_dire)
+{
+	if (side == 1 && y_dire >= 0)
+		side += 2;
+	if (side == 0 && x_dire >= 0)
+		side += 2;
+	return (side);
 }

@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:50 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/01 21:22:58 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/02 13:13:09 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_vline
 }			t_vline;
 
 t_pos	calc_pos(t_vars *vars, int x);
+int		get_side(int side, int step_x, int step_y);
 
 // Calculate step and initial sideDist
 t_dir	calc_dir(t_vars *vars, t_pos *pos)
@@ -117,7 +118,8 @@ t_vline	calc_vline(int line_height, t_pos *pos, t_dir *dir, t_vars *vars)
 	vline.draw_end = line_height / 2 + SCREENHEIGHT / 2;
 	if (vline.draw_end >= SCREENHEIGHT)
 		vline.draw_end = SCREENHEIGHT - 1;
-	vline.box = g_world_map[pos->map_x][pos->map_y] - 1;
+	vline.box = get_side(dir->side, pos->map_x - vars->pos_x,
+			pos->map_y - vars->pos_y);
 	vline.tex_width = g_textures[vline.box]->width;
 	vline.tex_height = g_textures[vline.box]->height;
 	if (dir->side == 0)
