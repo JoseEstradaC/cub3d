@@ -104,8 +104,9 @@ static void	rotate(t_vars *vars, t_mov *mov, int right)
 		rot_speed = -mov->rot_speed;
 	else
 		rot_speed = mov->rot_speed;
-	if (mov->cursor_x > ((SCREENWIDTH / 2) + 5))
-		rot_speed *= 2.5;
+	if (mov->cursor_x > ((SCREENWIDTH / 2) + 5)
+		|| mov->cursor_x < ((SCREENWIDTH / 2) + 5))
+		rot_speed *= 2;
 	old_dir_x = vars->dir_x;
 	vars->dir_x = vars->dir_x * cos(rot_speed)
 		- vars->dir_y * sin(rot_speed);
