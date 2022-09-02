@@ -13,7 +13,7 @@
 NAME	= cub3d
 
 # src / obj files
-SRC		=	main.c render.c render_utils.c
+SRC		=	main.c render.c render_utils.c hook.c
 
 OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
 

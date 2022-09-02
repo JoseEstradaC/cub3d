@@ -41,5 +41,6 @@ extern mlx_texture_t	*g_textures[8];
 
 void					clean_img(mlx_image_t *img);
 void					render(t_vars *vars);
+void					hook(void *param);
 
 #endif
