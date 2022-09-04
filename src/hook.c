@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   hook.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jarredon <jarredon@student.42malaga.       +#+  +:+       +#+        */
+/*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 11:44:27 by jarredon          #+#    #+#             */
-/*   Updated: 2022/09/04 16:07:00 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/04 18:28:20 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-typedef struct s_mov {
+typedef struct s_mov
+{
 	double	move_speed;
 	double	rot_speed;
 	int		cursor_x;
@@ -47,21 +48,21 @@ static void	check_w_s(t_vars *vars, t_mov *mov)
 {
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_W))
 	{
-		if (g_world_map[(int)(vars->pos_x + vars->dir_x
-				* mov->move_speed)][(int)vars->pos_y] == false)
+		if (vars->file.map[(int)(vars->pos_x + vars->dir_x
+				* mov->move_speed)][(int)vars->pos_y] == '0')
 			vars->pos_x += vars->dir_x * mov->move_speed;
-		if (g_world_map[(int)vars->pos_x][(int)(vars->pos_y + vars->dir_y
-			* mov->move_speed)] == false)
+		if (vars->file.map[(int)vars->pos_x][(int)(vars->pos_y + vars->dir_y
+			* mov->move_speed)] == '0')
 			vars->pos_y += vars->dir_y * mov->move_speed;
 		mov->is_w_or_s = 1;
 	}
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_S))
 	{
-		if (g_world_map[(int)(vars->pos_x - vars->dir_x
-				* mov->move_speed)][(int)vars->pos_y] == false)
+		if (vars->file.map[(int)(vars->pos_x - vars->dir_x
+				* mov->move_speed)][(int)vars->pos_y] == '0')
 			vars->pos_x -= vars->dir_x * mov->move_speed;
-		if (g_world_map[(int)vars->pos_x][(int)(vars->pos_y - vars->dir_y
-			* mov->move_speed)] == false)
+		if (vars->file.map[(int)vars->pos_x][(int)(vars->pos_y - vars->dir_y
+			* mov->move_speed)] == '0')
 			vars->pos_y -= vars->dir_y * mov->move_speed;
 		mov->is_w_or_s = 1;
 	}
@@ -73,22 +74,22 @@ static void	check_a_d(t_vars *vars, t_mov *mov)
 	{
 		if (mov->is_w_or_s)
 			mov->move_speed /= 2;
-		if (g_world_map[(int)(vars->pos_x - vars->dir_y
-				* mov->move_speed)][(int)vars->pos_y] == false)
+		if (vars->file.map[(int)(vars->pos_x - vars->dir_y
+				* mov->move_speed)][(int)vars->pos_y] == '0')
 			vars->pos_x -= vars->dir_y * mov->move_speed;
-		if (g_world_map[(int)vars->pos_x][(int)(vars->pos_y + vars->dir_x
-			* mov->move_speed)] == false)
+		if (vars->file.map[(int)vars->pos_x][(int)(vars->pos_y + vars->dir_x
+			* mov->move_speed)] == '0')
 			vars->pos_y += vars->dir_x * mov->move_speed;
 	}
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_D))
 	{
 		if (mov->is_w_or_s)
 			mov->move_speed /= 2;
-		if (g_world_map[(int)(vars->pos_x + vars->dir_y
-				* mov->move_speed)][(int)vars->pos_y] == false)
+		if (vars->file.map[(int)(vars->pos_x + vars->dir_y
+				* mov->move_speed)][(int)vars->pos_y] == '0')
 			vars->pos_x += vars->dir_y * mov->move_speed;
-		if (g_world_map[(int)vars->pos_x][(int)(vars->pos_y - vars->dir_x
-			* mov->move_speed)] == false)
+		if (vars->file.map[(int)vars->pos_x][(int)(vars->pos_y - vars->dir_x
+			* mov->move_speed)] == '0')
 			vars->pos_y -= vars->dir_x * mov->move_speed;
 	}
 }
@@ -104,25 +105,23 @@ static void	rotate(t_vars *vars, t_mov *mov, int right)
 		rot_speed = -mov->rot_speed;
 	else
 		rot_speed = mov->rot_speed;
-	if (mov->cursor_x > ((SCREENWIDTH / 2) + 5)
-		|| mov->cursor_x < ((SCREENWIDTH / 2) + 5))
+	if (mov->cursor_x > ((SCREENWIDTH / 2) + 5) || mov->cursor_x < ((SCREENWIDTH
+				/ 2) + 5))
 		rot_speed *= 2;
 	old_dir_x = vars->dir_x;
-	vars->dir_x = vars->dir_x * cos(rot_speed)
-		- vars->dir_y * sin(rot_speed);
-	vars->dir_y = old_dir_x * sin(rot_speed)
-		+ vars->dir_y * cos(rot_speed);
+	vars->dir_x = vars->dir_x * cos(rot_speed) - vars->dir_y * sin(rot_speed);
+	vars->dir_y = old_dir_x * sin(rot_speed) + vars->dir_y * cos(rot_speed);
 	old_plane_x = vars->plane_x;
-	vars->plane_x = vars->plane_x * cos(rot_speed)
-		- vars->plane_y * sin(rot_speed);
-	vars->plane_y = old_plane_x * sin(rot_speed)
-		+ vars->plane_y * cos(rot_speed);
+	vars->plane_x = vars->plane_x * cos(rot_speed) - vars->plane_y
+		* sin(rot_speed);
+	vars->plane_y = old_plane_x * sin(rot_speed) + vars->plane_y
+		* cos(rot_speed);
 }
 
 void	hook(void *param)
 {
-	t_vars				*vars;
-	t_mov				mov;
+	t_vars	*vars;
+	t_mov	mov;
 
 	mov.move_speed = 0.04;
 	mov.rot_speed = 0.025;
@@ -134,11 +133,13 @@ void	hook(void *param)
 	check_w_s(vars, &mov);
 	check_a_d(vars, &mov);
 	mlx_get_mouse_pos(vars->mlx, &mov.cursor_x, &mov.cursor_y);
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT) || (mov.cursor_x
-			> ((SCREENWIDTH / 2) + 5) && mov.cursor_x > 0 && mov.cursor_y > 0))
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT)
+		|| (mov.cursor_x > ((SCREENWIDTH / 2) + 5) && mov.cursor_x > 0
+			&& mov.cursor_y > 0))
 		rotate(vars, &mov, 1);
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT) || (mov.cursor_x
-			< ((SCREENWIDTH / 2) - 5) && mov.cursor_x > 0 && mov.cursor_y > 0))
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT)
+		|| (mov.cursor_x < ((SCREENWIDTH / 2) - 5) && mov.cursor_x > 0
+			&& mov.cursor_y > 0))
 		rotate(vars, &mov, 0);
 	mlx_set_mouse_pos(vars->mlx, SCREENWIDTH / 2, SCREENHEIGHT / 2);
 	render(vars);

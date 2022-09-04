@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 16:30:53 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/04 19:09:55 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,40 +14,15 @@
 
 #define NUMSPRITES 3
 
-t_sprite g_sprites[NUMSPRITES] = {
+t_sprite		g_sprites[NUMSPRITES] = {
 	{3.5, 5.5, 5},
 	{2.5, 12.5, 7},
 	{7.5, 5.5, 6},
 };
-double g_zbuffer[SCREENWIDTH];
+
+double			g_zbuffer[SCREENWIDTH];
 
 mlx_texture_t	*g_textures[8];
-
-int				g_world_map[MAPWIDTH][MAPHEIGHT] = {
-{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 7, 7, 7, 7, 7, 7, 7, 7},
-{4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 7},
-{4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7},
-{4, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7},
-{4, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 7},
-{4, 0, 4, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 7, 7, 0, 7, 7, 7, 7, 7},
-{4, 0, 5, 0, 0, 0, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 7, 0, 0, 0, 7, 7, 7, 1},
-{4, 0, 6, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 7, 0, 0, 0, 0, 0, 0, 8},
-{4, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 1},
-{4, 0, 8, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 7, 0, 0, 0, 0, 0, 0, 8},
-{4, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 7, 0, 0, 0, 7, 7, 7, 1},
-{4, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 0, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 1},
-{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
-{8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4},
-{6, 6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
-{4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 6, 0, 6, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3},
-{4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 0, 6, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2},
-{4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 2, 0, 0, 5, 0, 0, 2, 0, 0, 0, 2},
-{4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 0, 6, 2, 0, 0, 0, 0, 0, 2, 2, 0, 2, 2},
-{4, 0, 6, 0, 6, 0, 0, 0, 0, 4, 6, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 2},
-{4, 0, 0, 5, 0, 0, 0, 0, 0, 4, 6, 0, 6, 2, 0, 0, 0, 0, 0, 2, 2, 0, 2, 2},
-{4, 0, 6, 0, 6, 0, 0, 0, 0, 4, 6, 0, 6, 2, 0, 0, 5, 0, 0, 2, 0, 0, 0, 2},
-{4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 0, 6, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2},
-{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3}};
 
 void	load_textures(void)
 {
@@ -82,17 +57,39 @@ void	free_textures(void)
 		mlx_delete_texture(g_textures[i++]);
 }
 
-int	main(void)
+int	main(int argc, char **argv)
 {
 	mlx_t		*mlx;
 	mlx_image_t	*img;
 	t_vars		vars;
 
+	(void)argc;
+	if (argc != 2)
+	{
+		ft_putendl_fd("Error, Usage ./cub3d name_of_file.cub", 2);
+		return (1);
+	}
+	if (parser(&vars.file, argv[1]) == 1)
+	{
+		system("leaks -q cub3d");
+		return (1);
+	}
+	vars.file.map[vars.file.player_y][vars.file.player_x] = '0';
 	load_textures();
 	mlx = mlx_init(SCREENWIDTH, SCREENHEIGHT, "Raycaster", false);
 	if (!mlx)
+	{
+		free_textures();
+		free_file_struct(&vars.file);
 		exit(EXIT_FAILURE);
+	}
 	img = mlx_new_image(mlx, SCREENWIDTH, SCREENHEIGHT);
+	if (!img)
+	{
+		free_textures();
+		free_file_struct(&vars.file);
+		exit(EXIT_FAILURE);
+	}
 	vars.mlx = mlx;
 	vars.img = img;
 	vars.pos_x = 1.5;
@@ -108,4 +105,6 @@ int	main(void)
 	mlx_loop(mlx);
 	free_textures();
 	mlx_terminate(mlx);
+	free_file_struct(&vars.file);
+	system("leaks -q cub3d");
 }
