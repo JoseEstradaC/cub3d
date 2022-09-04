@@ -6,7 +6,7 @@
 #    By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/01 04:21:55 by jestrada          #+#    #+#              #
-#    Updated: 2022/09/04 17:24:10 by jestrada         ###   ########.fr        #
+#    Updated: 2022/09/04 19:52:14 by jestrada         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ SRC		=	main.c \
 			render.c \
 			render_utils.c \
 			hook.c \
+			hook_1.c \
 			qsort.c \
 			parser/map/map_parser.c \
 			parser/map/parser_checks.c \
