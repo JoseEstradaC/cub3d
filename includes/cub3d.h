@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 21:52:30 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 17:23:15 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/04 18:51:57 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@
 
 # define SCREENWIDTH 1920
 # define SCREENHEIGHT 1080
-# define MAPWIDTH 24
-# define MAPHEIGHT 24
 
 # define NUMSPRITES 3
 
@@ -36,8 +34,11 @@ typedef struct s_file
 	char				*ea;
 	char				*f;
 	char				*c;
+	char				**raw_data;
 	int					f_int;
 	int					c_int;
+	int					player_x;
+	int					player_y;
 
 }						t_file;
 
@@ -59,6 +60,7 @@ typedef struct s_vars
 	double				dir_y;
 	double				plane_x;
 	double				plane_y;
+	t_file				file;
 }						t_vars;
 
 typedef struct s_sprite
@@ -68,7 +70,6 @@ typedef struct s_sprite
 	int					texture;
 }						t_sprite;
 
-extern int				g_world_map[MAPWIDTH][MAPHEIGHT];
 extern mlx_texture_t	*g_textures[8];
 extern t_sprite			g_sprites[NUMSPRITES];
 extern double			g_zbuffer[SCREENWIDTH];
@@ -101,5 +102,6 @@ int						free_file_struct(t_file *file);
 int						join_line(char *line, char ***array);
 char					**file_cub_read(char *path);
 int						fill_file_struct_scenary(char **raw_file, t_file *file);
+int						end_with_png(char *str);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:50 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 17:09:54 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/04 17:56:59 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ typedef struct s_vline
 	int		tex_y;
 }			t_vline;
 
-
 void	sort_sprites(int *sprite_order, double *sprite_distance, int amount)
 {
 	double	old_distances[amount];
@@ -77,8 +76,8 @@ void	sort_sprites(int *sprite_order, double *sprite_distance, int amount)
 	}
 }
 
-t_pos	calc_pos(t_vars *vars, int x);
-int		get_side(int side, int step_x, int step_y);
+t_pos		calc_pos(t_vars *vars, int x);
+int			get_side(int side, int step_x, int step_y);
 
 // Calculate step and initial sideDist
 t_dir	calc_dir(t_vars *vars, t_pos *pos)
@@ -109,9 +108,9 @@ t_dir	calc_dir(t_vars *vars, t_pos *pos)
 }
 
 // return line height
-int	perform_dda(t_pos *pos, t_dir *dir)
+int	perform_dda(t_pos *pos, t_dir *dir, t_vars *vars)
 {
-	while (g_world_map[pos->map_x][pos->map_y] <= 0)
+	while (vars->file.map[pos->map_x][pos->map_y] == '0')
 	{
 		if (dir->side_dist_x < dir->side_dist_y)
 		{
@@ -144,8 +143,8 @@ t_vline	calc_vline(int line_height, t_pos *pos, t_dir *dir, t_vars *vars)
 	vline.draw_end = line_height / 2 + SCREENHEIGHT / 2;
 	if (vline.draw_end >= SCREENHEIGHT)
 		vline.draw_end = SCREENHEIGHT;
-	vline.box = get_side(dir->side, pos->map_x - vars->pos_x,
-			pos->map_y - vars->pos_y);
+	vline.box = get_side(dir->side, pos->map_x - vars->pos_x, pos->map_y
+			- vars->pos_y);
 	vline.tex_width = g_textures[vline.box]->width;
 	vline.tex_height = g_textures[vline.box]->height;
 	if (dir->side == 0)
@@ -179,8 +178,8 @@ void	print_line(t_vars *vars, int x, t_vline *vline)
 		if (vline->tex_y > vline->tex_height)
 			vline->tex_y = vline->tex_height;
 		tex_pos += step;
-		pix = &g_textures[vline->box]->pixels[vline->tex_width
-			* vline->tex_y * 4 + vline->tex_x * 4];
+		pix = &g_textures[vline->box]->pixels[vline->tex_width * vline->tex_y
+			* 4 + vline->tex_x * 4];
 		vline->color = (pix[0] << 24) | (pix[1] << 16) | (pix[2] << 8) | pix[3];
 		mlx_put_pixel(vars->img, x, y, vline->color);
 		y++;
@@ -199,7 +198,7 @@ void	render(t_vars *vars)
 	{
 		r_vars.pos = calc_pos(vars, x);
 		r_vars.dir = calc_dir(vars, &r_vars.pos);
-		vline = calc_vline(perform_dda(&r_vars.pos, &r_vars.dir),
+		vline = calc_vline(perform_dda(&r_vars.pos, &r_vars.dir, vars),
 				&r_vars.pos, &r_vars.dir, vars);
 		print_line(vars, x, &vline);
 		g_zbuffer[x] = r_vars.dir.perp_wall_dist;

@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 19:45:33 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/03 18:38:43 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/04 18:41:23 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,8 @@ int	end_with_cub(const char *path)
 	while (dot_splited[index])
 		index++;
 	last_length = ft_strlen(dot_splited[index - 1]);
-	if (ft_strncmp(dot_splited[index - 1], "cub", last_length))
+	if (ft_strncmp(dot_splited[index - 1], "cub", last_length)
+		|| ft_strlen(path) <= 4)
 	{
 		ft_split_free(dot_splited);
 		ft_putendl_fd("Map file is not end with .cub", 2);
