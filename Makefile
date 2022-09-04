@@ -6,14 +6,27 @@
 #    By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/01 04:21:55 by jestrada          #+#    #+#              #
-#    Updated: 2022/09/04 14:42:17 by jarredon         ###   ########.fr        #
+#    Updated: 2022/09/04 17:24:10 by jestrada         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= cub3d
 
 # src / obj files
-SRC		=	main.c render.c render_utils.c hook.c qsort.c
+SRC		=	main.c \
+			render.c \
+			render_utils.c \
+			hook.c \
+			qsort.c \
+			parser/map/map_parser.c \
+			parser/map/parser_checks.c \
+			parser/map/parser_checks_1.c \
+			parser/string_utils.c \
+			parser/parser_rgb.c \
+			parser/parser_utils.c \
+			parser/header/parser_header.c \
+			parser/header/parser_header1.c \
+			parser/parser.c
 
 OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
 
@@ -41,7 +54,9 @@ OBJDIR	= ./obj/
 all: obj $(MLX_LIB) $(FT_LIB) $(NAME)
 
 obj:
-	mkdir -p $(OBJDIR)
+	mkdir -p $(OBJDIR)/parser
+	mkdir -p $(OBJDIR)/parser/map
+	mkdir -p $(OBJDIR)/parser/header
 
 $(OBJDIR)%.o:$(SRCDIR)%.c
 	$(CC) $(CFLAGS) $(MLX_INC) $(FT_INC) -I $(INCDIR) -o $@ -c $<
@@ -66,7 +81,7 @@ fclean: clean
 	make -C $(FT) fclean
 
 r: all
-	./$(NAME)
+	./$(NAME) ./map.cub
 
 re: fclean
 	$(MAKE)
