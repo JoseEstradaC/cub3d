@@ -6,10 +6,11 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:50 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 17:09:54 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/04 19:51:48 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include "cub3d.h"
 
 typedef struct s_pos
@@ -40,15 +41,15 @@ typedef struct s_render_vars
 
 typedef struct s_vline
 {
-	int		draw_start;
-	int		draw_end;
-	int		color;
-	int		box;
-	int		line_height;
-	int		tex_width;
-	int		tex_height;
-	int		tex_x;
-	int		tex_y;
+	int			draw_start;
+	int			draw_end;
+	uint32_t	color;
+	int			box;
+	int			line_height;
+	int			tex_width;
+	int			tex_height;
+	int			tex_x;
+	int			tex_y;
 }			t_vline;
 
 
@@ -207,9 +208,8 @@ void	render(t_vars *vars)
 	}
 	int sprite_order[NUMSPRITES];
 	double sprite_distance[NUMSPRITES];
-	for (int i = 0; i < NUMSPRITES; i++) {
-		sprite_distance[i] = ((vars->pos_x - g_sprites[i].x) * (vars->pos_x - g_sprites[i].x) + (vars->pos_x - g_sprites[i].x) * (vars->pos_x - g_sprites[i].x));
-	}
+	for (int i = 0; i < NUMSPRITES; i++)
+		sprite_distance[i] = (vars->pos_x - g_sprites[i].x) * (vars->pos_x - g_sprites[i].x) + (vars->pos_y - g_sprites[i].y) * (vars->pos_y - g_sprites[i].y);
 	sort_sprites(sprite_order, sprite_distance, NUMSPRITES);
 	for (int i = 0; i < NUMSPRITES; i++)
 	{
@@ -243,7 +243,7 @@ void	render(t_vars *vars)
 					int	tex_y = ((d * vline.tex_height) / sprite_height) / 256;
 					uint8_t	*pix;
 					pix = &g_textures[g_sprites[sprite_order[i]].texture]->pixels[vline.tex_width * tex_y * 4 + tex_x * 4];
-					int	color = (pix[0] << 24) | (pix[1] << 16) | (pix[2] << 8) | pix[3];
+					unsigned int	color = (pix[0] << 24) | (pix[1] << 16) | (pix[2] << 8) | pix[3];
 					if ((color & 0xFFFFFF00) != 0)
 						mlx_put_pixel(vars->img, stripe, y, color);
 				}
