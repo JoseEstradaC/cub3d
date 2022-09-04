@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:50 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/02 13:13:09 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/04 10:12:45 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ t_vline	calc_vline(int line_height, t_pos *pos, t_dir *dir, t_vars *vars)
 	return (vline);
 }
 
-void	print_line(t_vars *vars, int x, t_dir *dir, t_vline *vline)
+void	print_line(t_vars *vars, int x, t_vline *vline)
 {
 	double	step;
 	double	tex_pos;
@@ -149,13 +149,13 @@ void	print_line(t_vars *vars, int x, t_dir *dir, t_vline *vline)
 	y = vline->draw_start;
 	while (y < vline->draw_end)
 	{
-		vline->tex_y = (int)tex_pos & (vline->tex_height - 1);
+		vline->tex_y = (int)tex_pos;
+		if (vline->tex_y > vline->tex_height)
+			vline->tex_y = vline->tex_height;
 		tex_pos += step;
-		pix = &g_textures[vline->box]->pixels[vline->tex_height
+		pix = &g_textures[vline->box]->pixels[vline->tex_width
 			* vline->tex_y * 4 + vline->tex_x * 4];
 		vline->color = (pix[0] << 24) | (pix[1] << 16) | (pix[2] << 8) | pix[3];
-		if (dir->side == 1)
-			vline->color = (vline->color >> 1) & 0x7f7f7fff;
 		mlx_put_pixel(vars->img, x, y, vline->color);
 		y++;
 	}
@@ -175,7 +175,7 @@ void	render(t_vars *vars)
 		r_vars.dir = calc_dir(vars, &r_vars.pos);
 		vline = calc_vline(perform_dda(&r_vars.pos, &r_vars.dir),
 				&r_vars.pos, &r_vars.dir, vars);
-		print_line(vars, x, &r_vars.dir, &vline);
+		print_line(vars, x, &vline);
 		x++;
 	}
 }

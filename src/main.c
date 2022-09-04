@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/02 11:53:05 by jose             ###   ########.fr       */
+/*   Updated: 2022/09/04 10:15:46 by jose             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,24 @@ int				g_world_map[MAPWIDTH][MAPHEIGHT] = {
 
 void	load_textures(void)
 {
-	g_textures[0] = mlx_load_png("pics/redbrick.png");
+	g_textures[0] = mlx_load_png("pics/face.png");
 	g_textures[1] = mlx_load_png("pics/bluestone.png");
 	g_textures[2] = mlx_load_png("pics/colorstone.png");
-	g_textures[3] = mlx_load_png("pics/eagle.png");
+	g_textures[3] = mlx_load_png("pics/2.png");
 	g_textures[4] = mlx_load_png("pics/wood.png");
 	g_textures[5] = mlx_load_png("pics/greystone.png");
 	g_textures[6] = mlx_load_png("pics/purplestone.png");
 	g_textures[7] = mlx_load_png("pics/purplestone.png");
+}
+
+// TODO numero de textures
+void	free_textures(void)
+{
+	int	i;
+
+	i = 0;
+	while (i < 8)
+		mlx_delete_texture(g_textures[i++]);
 }
 
 int	main(void)
@@ -76,5 +86,6 @@ int	main(void)
 	mlx_set_cursor_mode(mlx, MLX_MOUSE_DISABLED);
 	mlx_loop_hook(mlx, &hook, &vars);
 	mlx_loop(mlx);
+	free_textures();
 	mlx_terminate(mlx);
 }
