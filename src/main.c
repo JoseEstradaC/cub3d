@@ -6,11 +6,20 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 10:15:46 by jose             ###   ########.fr       */
+/*   Updated: 2022/09/04 16:30:53 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+#define NUMSPRITES 3
+
+t_sprite g_sprites[NUMSPRITES] = {
+	{3.5, 5.5, 5},
+	{2.5, 12.5, 7},
+	{7.5, 5.5, 6},
+};
+double g_zbuffer[SCREENWIDTH];
 
 mlx_texture_t	*g_textures[8];
 
@@ -42,14 +51,25 @@ int				g_world_map[MAPWIDTH][MAPHEIGHT] = {
 
 void	load_textures(void)
 {
+	int	i;
+
 	g_textures[0] = mlx_load_png("pics/face.png");
 	g_textures[1] = mlx_load_png("pics/bluestone.png");
 	g_textures[2] = mlx_load_png("pics/colorstone.png");
 	g_textures[3] = mlx_load_png("pics/2.png");
 	g_textures[4] = mlx_load_png("pics/wood.png");
-	g_textures[5] = mlx_load_png("pics/greystone.png");
-	g_textures[6] = mlx_load_png("pics/purplestone.png");
-	g_textures[7] = mlx_load_png("pics/purplestone.png");
+	g_textures[5] = mlx_load_png("pics/barrel.png");
+	g_textures[6] = mlx_load_png("pics/pillar.png");
+	g_textures[7] = mlx_load_png("pics/greenlight.png");
+	i = 0;
+	while (i < 8)
+	{
+		if (g_textures[i++] == NULL)
+		{
+			ft_putstr_fd("Error loading textures\n", 2);
+			exit(EXIT_FAILURE);
+		}
+	}
 }
 
 // TODO numero de textures

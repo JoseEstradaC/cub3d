@@ -6,7 +6,7 @@
 /*   By: jarredon <jarredon@student.42malaga.       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 11:44:27 by jarredon          #+#    #+#             */
-/*   Updated: 2022/09/02 11:44:30 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/04 16:07:00 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,5 +141,5 @@ void	hook(void *param)
 			< ((SCREENWIDTH / 2) - 5) && mov.cursor_x > 0 && mov.cursor_y > 0))
 		rotate(vars, &mov, 0);
 	mlx_set_mouse_pos(vars->mlx, SCREENWIDTH / 2, SCREENHEIGHT / 2);
-	render(param);
+	render(vars);
 }

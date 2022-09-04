@@ -6,14 +6,14 @@
 #    By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/01 04:21:55 by jestrada          #+#    #+#              #
-#    Updated: 2022/08/31 16:44:09 by jestrada         ###   ########.fr        #
+#    Updated: 2022/09/04 14:42:17 by jarredon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= cub3d
 
 # src / obj files
-SRC		=	main.c render.c render_utils.c hook.c
+SRC		=	main.c render.c render_utils.c hook.c qsort.c
 
 OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
 
