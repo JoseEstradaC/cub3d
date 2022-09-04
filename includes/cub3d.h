@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 21:52:30 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 18:51:57 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/04 19:50:26 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ typedef struct s_vars
 	double				dir_y;
 	double				plane_x;
 	double				plane_y;
+	int					pause;
 	t_file				file;
 }						t_vars;
 
@@ -103,5 +104,6 @@ int						join_line(char *line, char ***array);
 char					**file_cub_read(char *path);
 int						fill_file_struct_scenary(char **raw_file, t_file *file);
 int						end_with_png(char *str);
+void					check_paused(t_vars *vars);
 
 #endif

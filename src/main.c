@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 19:09:55 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/04 19:35:18 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ int	main(int argc, char **argv)
 	vars.dir_y = 0;
 	vars.plane_x = 0;
 	vars.plane_y = 0.66;
+	vars.pause = 0;
 	render(&vars);
 	mlx_image_to_window(mlx, img, 0, 0);
 	mlx_set_cursor_mode(mlx, MLX_MOUSE_DISABLED);

@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 11:44:27 by jarredon          #+#    #+#             */
-/*   Updated: 2022/09/04 18:28:20 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/04 19:52:06 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static void	print_frames(t_vars *vars)
 
 static void	check_w_s(t_vars *vars, t_mov *mov)
 {
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_W))
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_W) && vars->pause == 0)
 	{
 		if (vars->file.map[(int)(vars->pos_x + vars->dir_x
 				* mov->move_speed)][(int)vars->pos_y] == '0')
@@ -56,7 +56,7 @@ static void	check_w_s(t_vars *vars, t_mov *mov)
 			vars->pos_y += vars->dir_y * mov->move_speed;
 		mov->is_w_or_s = 1;
 	}
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_S))
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_S) && vars->pause == 0)
 	{
 		if (vars->file.map[(int)(vars->pos_x - vars->dir_x
 				* mov->move_speed)][(int)vars->pos_y] == '0')
@@ -70,7 +70,7 @@ static void	check_w_s(t_vars *vars, t_mov *mov)
 
 static void	check_a_d(t_vars *vars, t_mov *mov)
 {
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_A))
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_A) && vars->pause == 0)
 	{
 		if (mov->is_w_or_s)
 			mov->move_speed /= 2;
@@ -81,7 +81,7 @@ static void	check_a_d(t_vars *vars, t_mov *mov)
 			* mov->move_speed)] == '0')
 			vars->pos_y += vars->dir_x * mov->move_speed;
 	}
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_D))
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_D) && vars->pause == 0)
 	{
 		if (mov->is_w_or_s)
 			mov->move_speed /= 2;
@@ -130,17 +130,19 @@ void	hook(void *param)
 	print_frames(vars);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
 		mlx_close_window(vars->mlx);
+	check_paused(vars);
 	check_w_s(vars, &mov);
 	check_a_d(vars, &mov);
 	mlx_get_mouse_pos(vars->mlx, &mov.cursor_x, &mov.cursor_y);
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT)
-		|| (mov.cursor_x > ((SCREENWIDTH / 2) + 5) && mov.cursor_x > 0
-			&& mov.cursor_y > 0))
+	if ((mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT)
+			|| (mov.cursor_x > ((SCREENWIDTH / 2) + 5) && mov.cursor_x > 0
+				&& mov.cursor_y > 0)) && vars->pause == 0)
 		rotate(vars, &mov, 1);
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_LEFT)
-		|| (mov.cursor_x < ((SCREENWIDTH / 2) - 5) && mov.cursor_x > 0
-			&& mov.cursor_y > 0))
+	if ((mlx_is_key_down(vars->mlx, MLX_KEY_LEFT)
+			|| (mov.cursor_x < ((SCREENWIDTH / 2) - 5) && mov.cursor_x > 0
+				&& mov.cursor_y > 0)) && vars->pause == 0)
 		rotate(vars, &mov, 0);
-	mlx_set_mouse_pos(vars->mlx, SCREENWIDTH / 2, SCREENHEIGHT / 2);
+	if (!vars->pause)
+		mlx_set_mouse_pos(vars->mlx, SCREENWIDTH / 2, SCREENHEIGHT / 2);
 	render(vars);
 }
