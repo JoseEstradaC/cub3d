@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:50 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 19:54:58 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/04 20:38:18 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,18 +233,20 @@ void	render(t_vars *vars)
 
 		for (int stripe = drawstart_x; stripe < drawend_x; stripe++)
 		{
-			int	tex_x = (int)(256 * (stripe - (-sprite_width / 2 + sprite_screenx)) * vline.tex_width / sprite_width) / 256;
+			int	tex_x = (int)(256 * (stripe - (-sprite_width / 2 + sprite_screenx)) * g_textures[g_sprites[sprite_order[i]].texture]->width / sprite_width) / 256;
 			if (transform_y > 0 && transform_y < g_zbuffer[stripe])
 			{
+				uint8_t	*pix;
 				for (int y = drawstart_y; y < drawend_y; y++)
 				{
 					int d = y * 256 - SCREENHEIGHT * 128 + sprite_height * 128;
-					int	tex_y = ((d * vline.tex_height) / sprite_height) / 256;
-					uint8_t	*pix;
-					pix = &g_textures[g_sprites[sprite_order[i]].texture]->pixels[vline.tex_width * tex_y * 4 + tex_x * 4];
+					int	tex_y = ((d * g_textures[g_sprites[sprite_order[i]].texture]->height) / sprite_height) / 256;
+					pix = &g_textures[g_sprites[sprite_order[i]].texture]->pixels[g_textures[g_sprites[sprite_order[i]].texture]->width * tex_y * 4 + tex_x * 4];
 					unsigned int	color = (pix[0] << 24) | (pix[1] << 16) | (pix[2] << 8) | pix[3];
 					if ((color & 0xFFFFFF00) != 0)
+					{
 						mlx_put_pixel(vars->img, stripe, y, color);
+					}
 				}
 			}
 		}
