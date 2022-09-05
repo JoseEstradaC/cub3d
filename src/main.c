@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 14:12:54 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/05 15:00:45 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	free_textures(void)
 	int	i;
 
 	i = 0;
-	while (i < 8)
+	while (i < NUMSPRITES)
 		mlx_delete_texture(g_textures[i++]);
 }
 
