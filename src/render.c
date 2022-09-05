@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:50 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 17:24:46 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:41:45 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,9 +133,7 @@ void	render(t_vars *vars)
 		r_vars.pos = calc_pos(vars, x);
 		r_vars.dir = calc_dir(vars, &r_vars.pos);
 		vline = calc_vl(perform_dda(&r_vars.pos, &r_vars.dir, vars),
-						&r_vars.pos,
-						&r_vars.dir,
-						vars);
+				&r_vars.pos, &r_vars.dir, vars);
 		print_line(vars, x, &vline);
 		g_zbuffer[x] = r_vars.dir.perp_wall_dist;
 		x++;

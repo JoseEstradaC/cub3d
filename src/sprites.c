@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 10:58:47 by jarredon          #+#    #+#             */
-/*   Updated: 2022/09/05 17:29:32 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:41:11 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 typedef struct s_spt
 {
-	double	sprite_x;
-	double	sprite_y;
-	double	inv_det;
-	double	transform_x;
-	double	transform_y;
-	int		sprite_screenx;
-	int		sprite_height;
-	int		drawstart_y;
-	int		drawend_y;
-	int		sprite_width;
-	int		drawstart_x;
-	int		drawend_x;
-}			t_spt;
+	double		sprite_x;
+	double		sprite_y;
+	double		inv_det;
+	double		transform_x;
+	double		transform_y;
+	int			sprite_screenx;
+	int			sprite_height;
+	int			drawstart_y;
+	int			drawend_y;
+	int			sprite_width;
+	int			drawstart_x;
+	int			drawend_x;
+}				t_spt;
 
 static void	sort_sprites(int *sprite_order, double *sprite_distance, int amount)
 {
@@ -85,37 +85,39 @@ static void	do_math(t_vars *vars, int *sprite_order, int i, t_spt *spt)
 
 typedef struct s_s
 {
-	int		idx_tex;
-	int		tex_x;
-	int		tex_y;
-	int		d;
-}			t_s;
+	int			idx_tex;
+	int			tex_x;
+	int			tex_y;
+	int			d;
+	uint8_t		*pix;
+	uint32_t	color;
+}				t_s;
 
 static void	print_stripe(t_vars *vars, t_spt *spt, int stripe, int i_sprite)
 {
-	t_s			s;
-	int			y;
-	uint8_t		*pix;
-	uint32_t	color;
+	t_s	s;
+	int	y;
 
 	s.idx_tex = vars->file.sprites.sprites[i_sprite].texture;
+	if (s.idx_tex == 6 && mlx_get_time() % 2)
+		s.idx_tex += 1;
 	s.tex_x = (int)(256 * (stripe - (-spt->sprite_width / 2
 					+ spt->sprite_screenx)) * g_textures[s.idx_tex]->width
 			/ spt->sprite_width) / 256;
 	if (spt->transform_y > 0 && spt->transform_y < g_zbuffer[stripe])
 	{
-		y = spt->drawstart_y;
-		while (y < spt->drawend_y)
+		y = spt->drawstart_y - 1;
+		while (++y < spt->drawend_y)
 		{
 			s.d = y * 256 - SCREENHEIGHT * 128 + spt->sprite_height * 128;
 			s.tex_y = ((s.d * g_textures[s.idx_tex]->height)
 					/ spt->sprite_height) / 256;
-			pix = &g_textures[s.idx_tex]->pixels[g_textures[s.idx_tex]->width
+			s.pix = &g_textures[s.idx_tex]->pixels[g_textures[s.idx_tex]->width
 				* s.tex_y * 4 + s.tex_x * 4];
-			color = (pix[0] << 24) | (pix[1] << 16) | (pix[2] << 8) | pix[3];
-			if ((color & 0xFFFFFF00) != 0)
-				mlx_put_pixel(vars->img, stripe, y, color);
-			y++;
+			s.color = (s.pix[0] << 24) | (s.pix[1] << 16)
+				| (s.pix[2] << 8) | s.pix[3];
+			if ((s.color & 0xFFFFFF00) != 0)
+				mlx_put_pixel(vars->img, stripe, y, s.color);
 		}
 	}
 }

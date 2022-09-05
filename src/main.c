@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 17:27:37 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:35:39 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 double			g_zbuffer[SCREENWIDTH];
 
-mlx_texture_t	*g_textures[7];
+mlx_texture_t	*g_textures[NTEXTURES];
 
 void	load_textures(t_file *file)
 {
@@ -26,9 +26,10 @@ void	load_textures(t_file *file)
 	g_textures[3] = mlx_load_png(file->ea);
 	g_textures[4] = mlx_load_png("pics/barrel.png");
 	g_textures[5] = mlx_load_png("pics/pillar.png");
-	g_textures[6] = mlx_load_png("pics/greenlight.png");
+	g_textures[6] = mlx_load_png("pics/maggie.png");
+	g_textures[7] = mlx_load_png("pics/maggie2.png");
 	i = 0;
-	while (i < 7)
+	while (i < NTEXTURES)
 	{
 		if (g_textures[i++] == NULL)
 		{
