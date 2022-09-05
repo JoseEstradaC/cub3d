@@ -6,7 +6,7 @@
 #    By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/01 04:21:55 by jestrada          #+#    #+#              #
-#    Updated: 2022/09/05 17:21:35 by jestrada         ###   ########.fr        #
+#    Updated: 2022/09/05 19:02:26 by jestrada         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
 
 # compiler
 CC		= gcc
-CFLAGS	= -Wall -Wextra -Werror -g
+CFLAGS	= -Wall -Wextra -Werror
 
 # ft library
 FT		= ./libft/

@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 19:45:33 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 18:41:23 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 19:03:53 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,6 @@ void	change_space_with_x(char **map)
 	}
 }
 
-/*
-	OK: 1
-	KO: 0
-	Error: -1
-*/
 int	end_with_cub(const char *path)
 {
 	int		index;

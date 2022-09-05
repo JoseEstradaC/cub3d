@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 18:58:09 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/05 19:03:18 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	load_textures(t_file *file)
 		{
 			ft_putendl_fd("Error\n A problem was found loading textures", 2);
 			free_file_struct(file);
-			system("leaks -q cub3d");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -79,7 +78,6 @@ void	mlx_load(t_vars *vars)
 	free_textures();
 	mlx_terminate(vars->mlx);
 	free_file_struct(&vars->file);
-	system("leaks -q cub3d");
 }
 
 void	mlx_init_vars(t_vars *vars)
@@ -112,7 +110,6 @@ int	main(int argc, char **argv)
 	}
 	if (parser(&vars.file, argv[1]) == 1)
 	{
-		system("leaks -q cub3d");
 		return (1);
 	}
 	mlx_init_vars(&vars);
