@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 17:53:58 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 18:13:49 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void	load_textures(t_file *file)
 	g_textures[1] = mlx_load_png(file->so);
 	g_textures[2] = mlx_load_png(file->we);
 	g_textures[3] = mlx_load_png(file->ea);
-	g_textures[4] = mlx_load_png("pics/barrel.png");
-	g_textures[5] = mlx_load_png("pics/pillar.png");
+	g_textures[4] = mlx_load_png("pics/picolo.png");
+	g_textures[5] = mlx_load_png("pics/super.png");
 	g_textures[6] = mlx_load_png("pics/maggie.png");
 	g_textures[7] = mlx_load_png("pics/maggie2.png");
 	i = 0;

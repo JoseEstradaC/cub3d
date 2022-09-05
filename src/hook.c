@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 11:44:27 by jarredon          #+#    #+#             */
-/*   Updated: 2022/09/05 17:58:00 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 18:10:47 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static void	check_w_s(t_vars *vars, t_mov *mov)
 				* mov->move_speed)][(int)vars->pos_y] == '0')
 			vars->pos_x += vars->dir_x * mov->move_speed;
 		if (vars->file.map[(int)vars->pos_x][(int)(vars->pos_y + vars->dir_y
-				* mov->move_speed)] == '0')
+			* mov->move_speed)] == '0')
 			vars->pos_y += vars->dir_y * mov->move_speed;
 		mov->is_w_or_s = 1;
 	}
@@ -59,7 +59,7 @@ static void	check_w_s(t_vars *vars, t_mov *mov)
 				* mov->move_speed)][(int)vars->pos_y] == '0')
 			vars->pos_x -= vars->dir_x * mov->move_speed;
 		if (vars->file.map[(int)vars->pos_x][(int)(vars->pos_y - vars->dir_y
-				* mov->move_speed)] == '0')
+			* mov->move_speed)] == '0')
 			vars->pos_y -= vars->dir_y * mov->move_speed;
 		mov->is_w_or_s = 1;
 	}
@@ -75,7 +75,7 @@ static void	check_a_d(t_vars *vars, t_mov *mov)
 				* mov->move_speed)][(int)vars->pos_y] == '0')
 			vars->pos_x -= vars->dir_y * mov->move_speed;
 		if (vars->file.map[(int)vars->pos_x][(int)(vars->pos_y + vars->dir_x
-				* mov->move_speed)] == '0')
+			* mov->move_speed)] == '0')
 			vars->pos_y += vars->dir_x * mov->move_speed;
 	}
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_D) && vars->pause == 0)
@@ -86,7 +86,7 @@ static void	check_a_d(t_vars *vars, t_mov *mov)
 				* mov->move_speed)][(int)vars->pos_y] == '0')
 			vars->pos_x += vars->dir_y * mov->move_speed;
 		if (vars->file.map[(int)vars->pos_x][(int)(vars->pos_y - vars->dir_x
-				* mov->move_speed)] == '0')
+			* mov->move_speed)] == '0')
 			vars->pos_y -= vars->dir_x * mov->move_speed;
 	}
 }
