@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:50 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 14:17:31 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:24:46 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static t_dir	calc_dir(t_vars *vars, t_pos *pos)
 // return line height
 static int	perform_dda(t_pos *pos, t_dir *dir, t_vars *vars)
 {
-	while (vars->file.map[pos->map_x][pos->map_y] == '0')
+	while (vars->file.map[pos->map_x][pos->map_y] != '1')
 	{
 		if (dir->side_dist_x < dir->side_dist_y)
 		{
@@ -133,7 +133,9 @@ void	render(t_vars *vars)
 		r_vars.pos = calc_pos(vars, x);
 		r_vars.dir = calc_dir(vars, &r_vars.pos);
 		vline = calc_vl(perform_dda(&r_vars.pos, &r_vars.dir, vars),
-				&r_vars.pos, &r_vars.dir, vars);
+						&r_vars.pos,
+						&r_vars.dir,
+						vars);
 		print_line(vars, x, &vline);
 		g_zbuffer[x] = r_vars.dir.perp_wall_dist;
 		x++;

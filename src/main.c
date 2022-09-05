@@ -6,17 +6,11 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 17:12:50 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:27:37 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-t_sprite		g_sprites[NUMSPRITES] = {
-{3.5, 5.5, 4},
-{2.5, 5.5, 6},
-{4.5, 5.5, 5},
-};
 
 double			g_zbuffer[SCREENWIDTH];
 

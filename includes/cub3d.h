@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 21:52:30 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 17:13:15 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:29:48 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@
 
 # define SCREENWIDTH 1920
 # define SCREENHEIGHT 1080
-
-# define NUMSPRITES 3
 
 typedef struct s_sprite
 {
@@ -80,7 +78,6 @@ typedef struct s_vars
 }						t_vars;
 
 extern mlx_texture_t	*g_textures[7];
-extern t_sprite			g_sprites[NUMSPRITES];
 extern double			g_zbuffer[SCREENWIDTH];
 
 void					render(t_vars *vars);

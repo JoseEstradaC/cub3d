@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 19:49:33 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 17:05:13 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:28:54 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,11 @@ int	set_sprites_struct(t_file *file)
 		x = -1;
 		while (file->map[y][++x])
 			add_sprite(file, &i, x, y);
+	}
+	if (i > 100)
+	{
+		ft_putendl_fd("Error\n Only can put 100 sprites", 2);
+		return (1);
 	}
 	return (0);
 }
