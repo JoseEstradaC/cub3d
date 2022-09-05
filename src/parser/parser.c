@@ -6,11 +6,57 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 19:49:33 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 15:06:39 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:05:13 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+int	sprite_count(t_file *file)
+{
+	int	y;
+	int	x;
+	int	ret;
+
+	ret = 0;
+	y = 0;
+	while (file->map[y])
+	{
+		x = 0;
+		while (file->map[y][x])
+		{
+			if (is_sprite(file->map[y][x]))
+				ret++;
+			x++;
+		}
+		y++;
+	}
+	file->sprites.num_sprites = ret;
+	return (ret);
+}
+
+int	set_sprites_struct(t_file *file)
+{
+	int	y;
+	int	x;
+	int	i;
+
+	i = 0;
+	file->sprites.sprites = ft_calloc(sprite_count(file), sizeof(t_sprite));
+	if (!file->sprites.sprites)
+	{
+		ft_putendl_fd("Error", 2);
+		return (1);
+	}
+	y = -1;
+	while (file->map[++y])
+	{
+		x = -1;
+		while (file->map[y][++x])
+			add_sprite(file, &i, x, y);
+	}
+	return (0);
+}
 
 void	set_player_pos(t_file *file)
 {
@@ -62,7 +108,8 @@ int	parser(t_file *file, char *path)
 		return (1);
 	file->raw_data = raw_file;
 	file->map = parse_map(&raw_file[6]);
-	if (!file->map || parser_img_png(file) == 0)
+	if (!file->map || parser_img_png(file) == 0
+		|| set_sprites_struct(file) == 1)
 	{
 		free_file_struct(file);
 		return (1);

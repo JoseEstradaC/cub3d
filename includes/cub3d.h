@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 21:52:30 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 15:12:42 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:13:15 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,20 @@
 
 # define NUMSPRITES 3
 
+typedef struct s_sprite
+{
+	double				x;
+	double				y;
+	int					texture;
+}						t_sprite;
+
+typedef struct t_sprites
+{
+	int					num_sprites;
+	t_sprite			*sprites;
+
+}						t_sprites;
+
 typedef struct s_file
 {
 	char				**map;
@@ -39,6 +53,7 @@ typedef struct s_file
 	int					c_int;
 	int					player_x;
 	int					player_y;
+	t_sprites			sprites;
 
 }						t_file;
 
@@ -63,13 +78,6 @@ typedef struct s_vars
 	int					pause;
 	t_file				file;
 }						t_vars;
-
-typedef struct s_sprite
-{
-	double				x;
-	double				y;
-	int					texture;
-}						t_sprite;
 
 extern mlx_texture_t	*g_textures[7];
 extern t_sprite			g_sprites[NUMSPRITES];
@@ -105,5 +113,7 @@ int						fill_file_struct_scenary(char **raw_file, t_file *file);
 int						end_with_png(char *str);
 void					check_paused(t_vars *vars);
 int						is_sprite(char c);
+void					add_sprite(t_file *file, int *i, int x, int y);
+void					free_textures(void);
 
 #endif

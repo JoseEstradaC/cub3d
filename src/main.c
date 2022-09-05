@@ -6,16 +6,16 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 15:06:26 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:12:50 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
 t_sprite		g_sprites[NUMSPRITES] = {
-	{3.5, 5.5, 4},
-	{2.5, 5.5, 6},
-	{4.5, 5.5, 5},
+{3.5, 5.5, 4},
+{2.5, 5.5, 6},
+{4.5, 5.5, 5},
 };
 
 double			g_zbuffer[SCREENWIDTH];
@@ -44,16 +44,6 @@ void	load_textures(t_file *file)
 	}
 }
 
-// TODO numero de textures
-void	free_textures(void)
-{
-	int	i;
-
-	i = 0;
-	while (i < NUMSPRITES)
-		mlx_delete_texture(g_textures[i++]);
-}
-
 void	load_vars(t_vars *vars, char direction)
 {
 	vars->pos_x = vars->file.player_y + 0.5;
@@ -62,6 +52,7 @@ void	load_vars(t_vars *vars, char direction)
 	vars->dir_y = 0;
 	vars->plane_x = 0;
 	vars->plane_y = 0.66;
+	vars->pause = 0;
 	if (direction == 'S')
 	{
 		vars->dir_x = 1;
@@ -81,11 +72,40 @@ void	load_vars(t_vars *vars, char direction)
 	}
 }
 
+void	mlx_load(t_vars *vars)
+{
+	render(vars);
+	mlx_image_to_window(vars->mlx, vars->img, 0, 0);
+	mlx_set_cursor_mode(vars->mlx, MLX_MOUSE_DISABLED);
+	mlx_loop_hook(vars->mlx, &hook, vars);
+	mlx_loop(vars->mlx);
+	free_textures();
+	mlx_terminate(vars->mlx);
+	free_file_struct(&vars->file);
+	system("leaks -q cub3d");
+}
+
+void	mlx_init_vars(t_vars *vars)
+{
+	vars->mlx = mlx_init(SCREENWIDTH, SCREENHEIGHT, "Raycaster", false);
+	if (!vars->mlx)
+	{
+		free_textures();
+		free_file_struct(&vars->file);
+		exit(EXIT_FAILURE);
+	}
+	vars->img = mlx_new_image(vars->mlx, SCREENWIDTH, SCREENHEIGHT);
+	if (!vars->img)
+	{
+		free_textures();
+		free_file_struct(&vars->file);
+		exit(EXIT_FAILURE);
+	}
+}
+
 int	main(int argc, char **argv)
 {
-	mlx_t		*mlx;
-	mlx_image_t	*img;
-	t_vars		vars;
+	t_vars	vars;
 
 	(void)argc;
 	if (argc != 2)
@@ -98,39 +118,10 @@ int	main(int argc, char **argv)
 		system("leaks -q cub3d");
 		return (1);
 	}
+	mlx_init_vars(&vars);
 	load_vars(&vars, vars.file.map[vars.file.player_y][vars.file.player_x]);
 	vars.file.map[vars.file.player_y][vars.file.player_x] = '0';
 	load_textures(&vars.file);
-	mlx = mlx_init(SCREENWIDTH, SCREENHEIGHT, "Raycaster", false);
-	if (!mlx)
-	{
-		free_textures();
-		free_file_struct(&vars.file);
-		exit(EXIT_FAILURE);
-	}
-	img = mlx_new_image(mlx, SCREENWIDTH, SCREENHEIGHT);
-	if (!img)
-	{
-		free_textures();
-		free_file_struct(&vars.file);
-		exit(EXIT_FAILURE);
-	}
-	vars.mlx = mlx;
-	vars.img = img;
-	/*vars.pos_x = 1.5;*/
-	/*vars.pos_y = 1.5;*/
-	/*vars.dir_x = 0;*/
-	/*vars.dir_y = 0;*/
-	/*vars.plane_x = 0;*/
-	/*vars.plane_y = 0.66;*/
-	/*vars.pause = 0;*/
-	render(&vars);
-	mlx_image_to_window(mlx, img, 0, 0);
-	mlx_set_cursor_mode(mlx, MLX_MOUSE_DISABLED);
-	mlx_loop_hook(mlx, &hook, &vars);
-	mlx_loop(mlx);
-	free_textures();
-	mlx_terminate(mlx);
-	free_file_struct(&vars.file);
-	system("leaks -q cub3d");
+	mlx_load(&vars);
+	return (0);
 }
