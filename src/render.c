@@ -6,82 +6,15 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:50 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 20:38:18 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/05 12:45:49 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "cub3d.h"
-
-typedef struct s_pos
-{
-	double	ray_dir_x;
-	double	ray_dir_y;
-	int		map_x;
-	int		map_y;
-	double	delta_dist_x;
-	double	delta_dist_y;
-}			t_pos;
-
-typedef struct s_dir
-{
-	int		step_x;
-	int		step_y;
-	double	side_dist_x;
-	double	side_dist_y;
-	int		side;
-	double	perp_wall_dist;
-}			t_dir;
-
-typedef struct s_render_vars
-{
-	t_pos	pos;
-	t_dir	dir;
-}			t_render_vars;
-
-typedef struct s_vline
-{
-	int			draw_start;
-	int			draw_end;
-	uint32_t	color;
-	int			box;
-	int			line_height;
-	int			tex_width;
-	int			tex_height;
-	int			tex_x;
-	int			tex_y;
-}			t_vline;
-
-void	sort_sprites(int *sprite_order, double *sprite_distance, int amount)
-{
-	double	old_distances[amount];
-	int		i;
-	int		j;
-
-	ft_memcpy(old_distances, sprite_distance, amount * sizeof(double));
-	ft_qsort_dbl(sprite_distance, amount);
-	i = 0;
-	while (i < amount)
-	{
-		j = 0;
-		while (j < amount)
-		{
-			if (sprite_distance[i] == old_distances[j])
-			{
-				sprite_order[amount - i - 1] = j;
-				break ;
-			}
-			j++;
-		}
-		i++;
-	}
-}
-
-t_pos		calc_pos(t_vars *vars, int x);
-int			get_side(int side, int step_x, int step_y);
+#include "render.h"
 
 // Calculate step and initial sideDist
-t_dir	calc_dir(t_vars *vars, t_pos *pos)
+static t_dir	calc_dir(t_vars *vars, t_pos *pos)
 {
 	t_dir	dir;
 
@@ -109,7 +42,7 @@ t_dir	calc_dir(t_vars *vars, t_pos *pos)
 }
 
 // return line height
-int	perform_dda(t_pos *pos, t_dir *dir, t_vars *vars)
+static int	perform_dda(t_pos *pos, t_dir *dir, t_vars *vars)
 {
 	while (vars->file.map[pos->map_x][pos->map_y] == '0')
 	{
@@ -133,7 +66,7 @@ int	perform_dda(t_pos *pos, t_dir *dir, t_vars *vars)
 	return ((int)(SCREENHEIGHT / dir->perp_wall_dist));
 }
 
-t_vline	calc_vline(int line_height, t_pos *pos, t_dir *dir, t_vars *vars)
+static t_vline	calc_vline(int line_height, t_pos *pos, t_dir *dir, t_vars *vars)
 {
 	t_vline	vline;
 	double	wall_x;
@@ -162,7 +95,7 @@ t_vline	calc_vline(int line_height, t_pos *pos, t_dir *dir, t_vars *vars)
 	return (vline);
 }
 
-void	print_line(t_vars *vars, int x, t_vline *vline)
+static void	print_line(t_vars *vars, int x, t_vline *vline)
 {
 	double	step;
 	double	tex_pos;
@@ -205,50 +138,5 @@ void	render(t_vars *vars)
 		g_zbuffer[x] = r_vars.dir.perp_wall_dist;
 		x++;
 	}
-	int sprite_order[NUMSPRITES];
-	double sprite_distance[NUMSPRITES];
-	for (int i = 0; i < NUMSPRITES; i++)
-		sprite_distance[i] = (vars->pos_x - g_sprites[i].x) * (vars->pos_x - g_sprites[i].x) + (vars->pos_y - g_sprites[i].y) * (vars->pos_y - g_sprites[i].y);
-	sort_sprites(sprite_order, sprite_distance, NUMSPRITES);
-	for (int i = 0; i < NUMSPRITES; i++)
-	{
-		double	sprite_x = g_sprites[sprite_order[i]].x - vars->pos_x;
-		double	sprite_y = g_sprites[sprite_order[i]].y - vars->pos_y;
-		double	inv_det = 1.0 / (vars->plane_x * vars->dir_y - vars->plane_y * vars->dir_x);
-		double	transform_x = inv_det * (vars->dir_y * sprite_x - vars->dir_x * sprite_y);
-		double	transform_y = inv_det * (-vars->plane_y * sprite_x + vars->plane_x * sprite_y);
-		int	sprite_screenx = (int)((SCREENWIDTH / 2) * (1 + transform_x / transform_y));
-
-		int	sprite_height = abs((int)(SCREENHEIGHT / transform_y));
-		int	drawstart_y = -sprite_height / 2 + SCREENHEIGHT / 2;
-		if (drawstart_y < 0) drawstart_y = 0;
-		int	drawend_y = sprite_height / 2 + SCREENHEIGHT / 2;
-		if (drawend_y >= SCREENHEIGHT) drawend_y = SCREENHEIGHT - 1;
-
-		int sprite_width = abs((int)(SCREENHEIGHT / transform_y));
-		int	drawstart_x = -sprite_width / 2 + sprite_screenx;
-		if (drawstart_x < 0) drawstart_x = 0;
-		int	drawend_x = sprite_width / 2 + sprite_screenx;
-		if (drawend_x > SCREENWIDTH) drawend_x = SCREENWIDTH;
-
-		for (int stripe = drawstart_x; stripe < drawend_x; stripe++)
-		{
-			int	tex_x = (int)(256 * (stripe - (-sprite_width / 2 + sprite_screenx)) * g_textures[g_sprites[sprite_order[i]].texture]->width / sprite_width) / 256;
-			if (transform_y > 0 && transform_y < g_zbuffer[stripe])
-			{
-				uint8_t	*pix;
-				for (int y = drawstart_y; y < drawend_y; y++)
-				{
-					int d = y * 256 - SCREENHEIGHT * 128 + sprite_height * 128;
-					int	tex_y = ((d * g_textures[g_sprites[sprite_order[i]].texture]->height) / sprite_height) / 256;
-					pix = &g_textures[g_sprites[sprite_order[i]].texture]->pixels[g_textures[g_sprites[sprite_order[i]].texture]->width * tex_y * 4 + tex_x * 4];
-					unsigned int	color = (pix[0] << 24) | (pix[1] << 16) | (pix[2] << 8) | pix[3];
-					if ((color & 0xFFFFFF00) != 0)
-					{
-						mlx_put_pixel(vars->img, stripe, y, color);
-					}
-				}
-			}
-		}
-	}
+	sprites(vars);
 }

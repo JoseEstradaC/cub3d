@@ -6,21 +6,12 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:55 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 08:45:28 by jose             ###   ########.fr       */
+/*   Updated: 2022/09/05 10:57:45 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-typedef struct s_pos
-{
-	double	ray_dir_x;
-	double	ray_dir_y;
-	int		map_x;
-	int		map_y;
-	double	delta_dist_x;
-	double	delta_dist_y;
-}			t_pos;
+#include "render.h"
 
 void	clean_img(mlx_image_t *img)
 {
