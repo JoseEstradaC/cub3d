@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 17:35:39 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:53:58 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@ void	load_textures(t_file *file)
 	{
 		if (g_textures[i++] == NULL)
 		{
-			ft_putendl_fd("Error\nloading textures", 2);
+			ft_putendl_fd("Error\n A problem was found loading textures", 2);
+			free_file_struct(file);
+			system("leaks -q cub3d");
 			exit(EXIT_FAILURE);
 		}
 	}
