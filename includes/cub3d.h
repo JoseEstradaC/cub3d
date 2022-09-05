@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 21:52:30 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 13:06:18 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/05 15:12:42 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,5 +104,6 @@ char					**file_cub_read(char *path);
 int						fill_file_struct_scenary(char **raw_file, t_file *file);
 int						end_with_png(char *str);
 void					check_paused(t_vars *vars);
+int						is_sprite(char c);
 
 #endif

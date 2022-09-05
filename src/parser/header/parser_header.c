@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/04 16:47:29 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 17:16:25 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 15:06:56 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	**file_cub_read(char *path)
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 	{
-		ft_putendl_fd("Error, .cub file can't be found", 2);
+		ft_putendl_fd("Error\n.cub file can't be found", 2);
 		return (NULL);
 	}
 	while (true)
@@ -87,7 +87,7 @@ int	fill_file_struct_scenary_1(char **raw_file, t_file *file, int index)
 	{
 		free_file_struct(file);
 		ft_split_free(raw_file);
-		ft_putendl_fd("Error, .cub it not correct formated", 2);
+		ft_putendl_fd("Error\n.cub it not correct formated", 2);
 		return (1);
 	}
 	if (path_delete_new_line(file) == 1 || parser_rgb(file, 'c') == -1
@@ -118,7 +118,7 @@ int	fill_file_struct_scenary(char **raw_file, t_file *file)
 		}
 		if (path_insert(tmp, file) == 1)
 		{
-			ft_putendl_fd("Error, .cub it not correct formated", 2);
+			ft_putendl_fd("Error\n.cub it not correct formated", 2);
 			free_file_struct(file);
 			ft_split_free(raw_file);
 			ft_split_free(tmp);

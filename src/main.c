@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 15:00:45 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 15:06:26 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	load_textures(t_file *file)
 	{
 		if (g_textures[i++] == NULL)
 		{
-			ft_putstr_fd("Error loading textures\n", 2);
+			ft_putendl_fd("Error\nloading textures", 2);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -90,7 +90,7 @@ int	main(int argc, char **argv)
 	(void)argc;
 	if (argc != 2)
 	{
-		ft_putendl_fd("Error, Usage ./cub3d name_of_file.cub", 2);
+		ft_putendl_fd("Error\nUsage ./cub3d name_of_file.cub", 2);
 		return (1);
 	}
 	if (parser(&vars.file, argv[1]) == 1)

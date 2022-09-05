@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 19:49:33 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 19:07:39 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 15:06:39 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	parser_img_png(t_file *file)
 		|| ft_strlen(file->no) <= 4 || end_with_png(file->no) == 0
 		|| ft_strlen(file->so) <= 4 || end_with_png(file->so) == 0)
 	{
-		ft_putendl_fd("Error, img is not .png file", 2);
+		ft_putendl_fd("Error\nimg is not .png file", 2);
 		return (0);
 	}
 	return (1);

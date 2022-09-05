@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 19:48:00 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 17:12:57 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 15:14:51 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ int	is_zero_or_player(char c)
 
 int	is_zero_or_one_or_player(char c)
 {
-	if (is_zero_or_player(c) || c == '1')
+	if (is_zero_or_player(c) || c == '1' || is_sprite(c))
 		return (1);
 	return (0);
 }
 
 int	is_terrain(char c)
 {
-	if (c == '0' || c == '1' || c == 'x')
+	if (c == '0' || c == '1' || c == 'x' || is_sprite(c))
 		return (1);
 	return (0);
 }
@@ -63,7 +63,7 @@ int	is_valid_map_content(char **map)
 	}
 	if (player_count != 1 || error != 0)
 	{
-		ft_putendl_fd("Error, map content is invalid\n", 2);
+		ft_putendl_fd("Error\nmap content is invalid", 2);
 		return (0);
 	}
 	return (1);

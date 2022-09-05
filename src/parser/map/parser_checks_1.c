@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 19:48:00 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/03 18:34:52 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 15:14:06 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ int	surround_check(char **map)
 		x = 0;
 		while (map[y][x] != '\0')
 		{
-			if (map[y][x] == '0' && !surrounding_by_zero_or_1(map, x, y))
+			if ((map[y][x] == '0' || is_sprite(map[y][x]))
+				&& !surrounding_by_zero_or_1(map, x, y))
 			{
 				ft_putendl_fd("Map is not surround by walls\n", 2);
 				return (0);
@@ -95,4 +96,11 @@ int	is_valid_char_map_line(char *line)
 		index++;
 	}
 	return (1);
+}
+
+int	is_sprite(char c)
+{
+	if (c == '2' || c == '3' || c == '4')
+		return (1);
+	return (0);
 }

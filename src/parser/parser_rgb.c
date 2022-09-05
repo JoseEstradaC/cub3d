@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/04 16:40:52 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 13:32:01 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/05 15:06:35 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	parser_rgb(t_file *file, char type)
 	if (ft_split_count(split) != 3 || str_to_rgb(split, &rgb) == 1)
 	{
 		ft_split_free(split);
-		ft_putendl_fd("Error, Invalid color formart", 2);
+		ft_putendl_fd("Error\nInvalid color formart", 2);
 		return (-1);
 	}
 	rgb_to_hex_in_t_file(file, type, &rgb);
