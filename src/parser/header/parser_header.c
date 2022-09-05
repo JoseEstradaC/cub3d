@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/04 16:47:29 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 15:06:56 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 18:10:39 by jestrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ char	**file_cub_read(char *path)
 		if (read_status == 1)
 		{
 			ft_split_free(raw_file);
+			close(fd);
 			return (NULL);
 		}
 	}
