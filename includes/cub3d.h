@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 21:52:30 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 17:35:54 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 18:56:27 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 # define SCREENWIDTH 1920
 # define SCREENHEIGHT 1080
-# define NTEXTURES 8
+# define NTEXTURES 9
 
 typedef struct s_sprite
 {
@@ -83,6 +83,7 @@ extern double			g_zbuffer[SCREENWIDTH];
 
 void					render(t_vars *vars);
 void					hook(void *param);
+int						intro(t_vars *vars);
 
 void					ft_qsort(void *array, unsigned int nitems,
 							unsigned int size, int (*cmp)(void *, void *));

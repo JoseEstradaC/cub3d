@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 11:44:27 by jarredon          #+#    #+#             */
-/*   Updated: 2022/09/05 18:10:47 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/05 18:57:22 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,30 +41,6 @@ static void	print_frames(t_vars *vars)
 	frame_count++;
 }
 
-static void	check_w_s(t_vars *vars, t_mov *mov)
-{
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_W) && vars->pause == 0)
-	{
-		if (vars->file.map[(int)(vars->pos_x + vars->dir_x
-				* mov->move_speed)][(int)vars->pos_y] == '0')
-			vars->pos_x += vars->dir_x * mov->move_speed;
-		if (vars->file.map[(int)vars->pos_x][(int)(vars->pos_y + vars->dir_y
-			* mov->move_speed)] == '0')
-			vars->pos_y += vars->dir_y * mov->move_speed;
-		mov->is_w_or_s = 1;
-	}
-	if (mlx_is_key_down(vars->mlx, MLX_KEY_S) && vars->pause == 0)
-	{
-		if (vars->file.map[(int)(vars->pos_x - vars->dir_x
-				* mov->move_speed)][(int)vars->pos_y] == '0')
-			vars->pos_x -= vars->dir_x * mov->move_speed;
-		if (vars->file.map[(int)vars->pos_x][(int)(vars->pos_y - vars->dir_y
-			* mov->move_speed)] == '0')
-			vars->pos_y -= vars->dir_y * mov->move_speed;
-		mov->is_w_or_s = 1;
-	}
-}
-
 static void	check_a_d(t_vars *vars, t_mov *mov)
 {
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_A) && vars->pause == 0)
@@ -89,6 +65,32 @@ static void	check_a_d(t_vars *vars, t_mov *mov)
 			* mov->move_speed)] == '0')
 			vars->pos_y -= vars->dir_x * mov->move_speed;
 	}
+}
+
+static void	check_mov(t_vars *vars, t_mov *mov)
+{
+	check_paused(vars);
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_W) && vars->pause == 0)
+	{
+		if (vars->file.map[(int)(vars->pos_x + vars->dir_x
+				* mov->move_speed)][(int)vars->pos_y] == '0')
+			vars->pos_x += vars->dir_x * mov->move_speed;
+		if (vars->file.map[(int)vars->pos_x][(int)(vars->pos_y + vars->dir_y
+			* mov->move_speed)] == '0')
+			vars->pos_y += vars->dir_y * mov->move_speed;
+		mov->is_w_or_s = 1;
+	}
+	if (mlx_is_key_down(vars->mlx, MLX_KEY_S) && vars->pause == 0)
+	{
+		if (vars->file.map[(int)(vars->pos_x - vars->dir_x
+				* mov->move_speed)][(int)vars->pos_y] == '0')
+			vars->pos_x -= vars->dir_x * mov->move_speed;
+		if (vars->file.map[(int)vars->pos_x][(int)(vars->pos_y - vars->dir_y
+			* mov->move_speed)] == '0')
+			vars->pos_y -= vars->dir_y * mov->move_speed;
+		mov->is_w_or_s = 1;
+	}
+	check_a_d(vars, mov);
 }
 
 // if 'right', rotate the camera to the right, else left
@@ -120,16 +122,16 @@ void	hook(void *param)
 	t_vars	*vars;
 	t_mov	mov;
 
+	vars = param;
+	if (intro(vars))
+		return ;
 	mov.move_speed = 0.04;
 	mov.rot_speed = 0.025;
 	mov.is_w_or_s = 0;
-	vars = param;
 	print_frames(vars);
 	if (mlx_is_key_down(vars->mlx, MLX_KEY_ESCAPE))
 		mlx_close_window(vars->mlx);
-	check_paused(vars);
-	check_w_s(vars, &mov);
-	check_a_d(vars, &mov);
+	check_mov(vars, &mov);
 	mlx_get_mouse_pos(vars->mlx, &mov.cursor_x, &mov.cursor_y);
 	if ((mlx_is_key_down(vars->mlx, MLX_KEY_RIGHT)
 			|| (mov.cursor_x > ((SCREENWIDTH / 2) + 5) && mov.cursor_x > 0

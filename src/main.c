@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 17:01:57 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 18:13:49 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/05 18:58:09 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	load_textures(t_file *file)
 	g_textures[5] = mlx_load_png("pics/super.png");
 	g_textures[6] = mlx_load_png("pics/maggie.png");
 	g_textures[7] = mlx_load_png("pics/maggie2.png");
+	g_textures[8] = mlx_load_png("pics/dalle-magie3.png");
 	i = 0;
 	while (i < NTEXTURES)
 	{
@@ -71,9 +72,8 @@ void	load_vars(t_vars *vars, char direction)
 
 void	mlx_load(t_vars *vars)
 {
-	render(vars);
-	mlx_image_to_window(vars->mlx, vars->img, 0, 0);
 	mlx_set_cursor_mode(vars->mlx, MLX_MOUSE_DISABLED);
+	intro(vars);
 	mlx_loop_hook(vars->mlx, &hook, vars);
 	mlx_loop(vars->mlx);
 	free_textures();
