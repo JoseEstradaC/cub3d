@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 21:52:30 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 19:50:26 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 13:06:18 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,10 @@ typedef struct s_sprite
 	int					texture;
 }						t_sprite;
 
-extern mlx_texture_t	*g_textures[8];
+extern mlx_texture_t	*g_textures[7];
 extern t_sprite			g_sprites[NUMSPRITES];
 extern double			g_zbuffer[SCREENWIDTH];
 
-void					clean_img(mlx_image_t *img);
 void					render(t_vars *vars);
 void					hook(void *param);
 

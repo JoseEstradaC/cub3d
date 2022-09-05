@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/04 16:40:52 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/04 16:41:25 by jestrada         ###   ########.fr       */
+/*   Updated: 2022/09/05 13:32:01 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,15 @@ void	rgb_to_hex_in_t_file(t_file *file, char type, t_rgb *rgb)
 	{
 		free(file->c);
 		file->c = NULL;
-		file->c_int = ((rgb->r & 0xff) << 16) + ((rgb->g & 0xff) << 8)
-			+ (rgb->b & 0xff);
+		file->c_int = ((rgb->r & 0xff) << 24) + ((rgb->g & 0xff) << 16)
+			+ ((rgb->b & 0xff) << 8) + 0xff;
 	}
 	else
 	{
 		free(file->f);
 		file->f = NULL;
-		file->f_int = ((rgb->r & 0xff) << 16) + ((rgb->g & 0xff) << 8)
-			+ (rgb->b & 0xff);
+		file->f_int = ((rgb->r & 0xff) << 24) + ((rgb->g & 0xff) << 16)
+			+ ((rgb->b & 0xff) << 8) + 0xff;
 	}
 }
 

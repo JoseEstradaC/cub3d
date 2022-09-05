@@ -40,6 +40,7 @@ typedef struct s_vline
 	int			tex_y;
 }			t_vline;
 
+void	clean_img(mlx_image_t *img, uint32_t ceiling, uint32_t floor);
 t_pos	calc_pos(t_vars *vars, int x);
 int		get_side(int side, int step_x, int step_y);
 void	sprites(t_vars *vars);

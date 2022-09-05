@@ -6,14 +6,14 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:55 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 10:57:45 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/05 13:07:33 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 #include "render.h"
 
-void	clean_img(mlx_image_t *img)
+void	clean_img(mlx_image_t *img, uint32_t ceiling, uint32_t floor)
 {
 	int	x;
 	int	y;
@@ -23,14 +23,14 @@ void	clean_img(mlx_image_t *img)
 	{
 		x = 0;
 		while (x < SCREENWIDTH)
-			mlx_put_pixel(img, x++, y, 0x3c75deff);
+			mlx_put_pixel(img, x++, y, ceiling);
 		y++;
 	}
 	while (y < SCREENHEIGHT)
 	{
 		x = 0;
 		while (x < SCREENWIDTH)
-			mlx_put_pixel(img, x++, y, 0x32a852ff);
+			mlx_put_pixel(img, x++, y, floor);
 		y++;
 	}
 }

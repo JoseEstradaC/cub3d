@@ -6,7 +6,7 @@
 /*   By: jestrada <jestrada@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 16:50:50 by jestrada          #+#    #+#             */
-/*   Updated: 2022/09/05 12:45:49 by jarredon         ###   ########.fr       */
+/*   Updated: 2022/09/05 14:17:31 by jarredon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static int	perform_dda(t_pos *pos, t_dir *dir, t_vars *vars)
 	return ((int)(SCREENHEIGHT / dir->perp_wall_dist));
 }
 
-static t_vline	calc_vline(int line_height, t_pos *pos, t_dir *dir, t_vars *vars)
+static t_vline	calc_vl(int line_height, t_pos *pos, t_dir *dir, t_vars *vars)
 {
 	t_vline	vline;
 	double	wall_x;
@@ -126,13 +126,13 @@ void	render(t_vars *vars)
 	int				x;
 	t_vline			vline;
 
-	clean_img(vars->img);
+	clean_img(vars->img, vars->file.c_int, vars->file.f_int);
 	x = 0;
 	while (x < SCREENWIDTH)
 	{
 		r_vars.pos = calc_pos(vars, x);
 		r_vars.dir = calc_dir(vars, &r_vars.pos);
-		vline = calc_vline(perform_dda(&r_vars.pos, &r_vars.dir, vars),
+		vline = calc_vl(perform_dda(&r_vars.pos, &r_vars.dir, vars),
 				&r_vars.pos, &r_vars.dir, vars);
 		print_line(vars, x, &vline);
 		g_zbuffer[x] = r_vars.dir.perp_wall_dist;
